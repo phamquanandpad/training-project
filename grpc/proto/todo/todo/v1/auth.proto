@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package todo.todo.v1;
+option go_package = "github.com/phamquanandpad/training-project/grpc/go/todo/todo/v1;todo_todo_v1";
+
+import "todo/common/v1/todo_model.proto";
+
+service AuthService {
+    rpc Login(LoginRequest) returns (LoginResponse) {}
+    rpc Register(RegisterRequest) returns (RegisterResponse) {}
+    rpc Refresh(RefreshRequest) returns (RefreshResponse) {}
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64  access_token_expires = 3;
+  int64 refresh_token_expires = 4;
+
+  common.v1.User user = 5;
+}
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  string username = 3;
+}
+
+message RegisterResponse {
+  common.v1.User user = 1;
+}
+
+message RefreshRequest {
+  string refresh_token = 1;
+}
+
+message RefreshResponse {
+  string access_token = 1;
+  int64  access_token_expires = 2;
+}

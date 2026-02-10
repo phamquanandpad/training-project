@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package todo.todo.v1;
+option go_package = "github.com/phamquanandpad/training-project/grpc/go/todo/todo/v1;todo_todo_v1";
+
+import "todo/common/v1/todo_model.proto";
+
+service TodoService {
+    rpc ListTodos(ListTodosRequest) returns (ListTodosResponse) {}
+    rpc GetTodo(GetTodoRequest) returns (GetTodoResponse) {}
+    rpc PostTodo(PostTodoRequest) returns (PostTodoResponse) {}
+    rpc PutTodo(PutTodoRequest) returns (PutTodoResponse) {}
+    rpc DeleteTodo(DeleteTodoRequest) returns (DeleteTodoResponse) {}
+}
+
+message UserAttributes { int64 user_id = 1; }
+
+message ListTodosRequest {
+    UserAttributes user_attributes = 1;
+    int64 offset = 2;
+    int64 limit = 3;
+}
+
+message ListTodosResponse {
+    repeated common.v1.Todo todos = 1;
+    int64 total = 2;
+}
+
+message GetTodoRequest {
+    UserAttributes user_attributes = 1;
+    int64 todo_id = 2;
+}
+
+message GetTodoResponse {
+    common.v1.Todo todo = 1;
+}
+
+message PostTodoRequest {
+    UserAttributes user_attributes = 1;
+    string task = 2;
+    string description = 3;
+    common.v1.TodoStatus status = 4;
+}
+
+message PostTodoResponse {
+    common.v1.Todo todo = 1;
+}
+
+message PutTodoRequest {
+    UserAttributes user_attributes = 1;
+    int64 todo_id = 2;
+    string task = 3;
+    string description = 4;
+    common.v1.TodoStatus status = 5;
+}
+
+message PutTodoResponse {
+    common.v1.Todo todo = 1;
+}
+
+message DeleteTodoRequest {
+    UserAttributes user_attributes = 1;
+    int64 todo_id = 2;
+}
+
+message DeleteTodoResponse {}
