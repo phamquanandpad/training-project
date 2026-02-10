@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package todo.common.v1;
+option go_package = "github.com/phamquanandpad/training-project/grpc/go/todo/common/v1;todo_common_v1";
+
+import "google/protobuf/timestamp.proto";
+
+enum TodoStatus {
+    TODO_STATUS_PENDING = 0;
+    TODO_STATUS_INPROCESS = 1;
+    TODO_STATUS_DONE = 2;
+}
+
+message Todo {
+    int64 id = 1;
+    int64 user_id = 2;
+    string task = 3;
+    string description = 4;
+    TodoStatus status = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+}
+
+message User {
+    int64 id = 1;
+    string username = 2;
+    string email = 3;
+}
