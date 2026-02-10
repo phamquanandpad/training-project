@@ -28,7 +28,7 @@ type Todo struct {
 	ID          TodoID
 	UserID      UserID
 	Task        string
-	Description string
+	Description *string
 	Status      TodoStatus
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -38,8 +38,14 @@ type Todo struct {
 type NewTodo struct {
 	UserID      UserID
 	Task        string
-	Description string
+	Description *string
 	Status      TodoStatus
+}
+
+type UpdateTodo struct {
+	Task        *string
+	Description *string
+	Status      *TodoStatus
 }
 
 func (id *TodoID) Int64() int64 {
