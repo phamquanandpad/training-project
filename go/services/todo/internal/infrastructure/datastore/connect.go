@@ -9,8 +9,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/plugin/dbresolver"
 
-	"github.com/phamquanandpad/training-project/services/todo/internal/config"
-	"github.com/phamquanandpad/training-project/services/todo/internal/domain/gateway"
+	"github.com/phamquanandpad/training-project/go/services/todo/internal/config"
+	"github.com/phamquanandpad/training-project/go/services/todo/internal/domain/gateway"
 )
 
 type TodoConn struct {

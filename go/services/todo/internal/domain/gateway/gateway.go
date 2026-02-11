@@ -3,7 +3,7 @@ package gateway
 import (
 	"context"
 
-	"github.com/phamquanandpad/training-project/services/todo/internal/domain/model/todo"
+	"github.com/phamquanandpad/training-project/go/services/todo/internal/domain/model/todo"
 )
 
 type Binder interface {
