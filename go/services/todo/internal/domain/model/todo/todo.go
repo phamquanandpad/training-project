@@ -7,12 +7,12 @@ import (
 
 type TodoID int64
 
-type TodoStatus string
+type TodoStatus int32
 
 const (
-	Pending   TodoStatus = "pending"
-	InProcess TodoStatus = "in_process"
-	Done      TodoStatus = "done"
+	Pending   TodoStatus = 0
+	InProcess TodoStatus = 1
+	Done      TodoStatus = 2
 )
 
 func (ts TodoStatus) IsValid() bool {
