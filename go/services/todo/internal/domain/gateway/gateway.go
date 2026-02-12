@@ -11,14 +11,14 @@ type Binder interface {
 }
 
 type TodoQueriesGateway interface {
-	GetTodo(ctx context.Context, todoID todo.TodoID) (*todo.Todo, error)
-	ListTodos(ctx context.Context) ([]*todo.Todo, error)
+	GetTodo(ctx context.Context, todoID todo.TodoID, userID todo.UserID) (*todo.Todo, error)
+	ListTodos(ctx context.Context, userID todo.UserID) ([]*todo.Todo, int, error)
 }
 
 type TodoCommandsGateway interface {
 	CreateTodo(ctx context.Context, newTodo todo.NewTodo) (*todo.Todo, error)
-	UpdateTodo(ctx context.Context, todoID todo.TodoID, updateTodo todo.UpdateTodo) (*todo.Todo, error)
-	SoftDeleteTodo(ctx context.Context, todoID todo.TodoID) error
+	UpdateTodo(ctx context.Context, todoID todo.TodoID, userID todo.UserID, updateTodo todo.UpdateTodo) (*todo.Todo, error)
+	SoftDeleteTodo(ctx context.Context, todoID todo.TodoID, userID todo.UserID) error
 }
 
 type UserQueriesGateway interface {

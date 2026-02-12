@@ -3,19 +3,22 @@ package datastore
 import (
 	"context"
 	"errors"
+	"time"
 
+	"gorm.io/gorm"
+
+	"github.com/phamquanandpad/training-project/go/pkg/cast"
 	"github.com/phamquanandpad/training-project/go/services/todo/internal/domain/gateway"
 	"github.com/phamquanandpad/training-project/go/services/todo/internal/domain/model/todo"
-	"gorm.io/gorm"
 )
 
-type TodoWriter struct{}
+type todoWriter struct{}
 
 func NewTodoWriter() gateway.TodoCommandsGateway {
-	return &TodoWriter{}
+	return &todoWriter{}
 }
 
-func (w *TodoWriter) CreateTodo(
+func (w *todoWriter) CreateTodo(
 	ctx context.Context,
 	newTodo todo.NewTodo,
 ) (*todo.Todo, error) {
@@ -40,9 +43,10 @@ func (w *TodoWriter) CreateTodo(
 	return &createdTodo, nil
 }
 
-func (w *TodoWriter) UpdateTodo(
+func (w *todoWriter) UpdateTodo(
 	ctx context.Context,
 	todoID todo.TodoID,
+	userID todo.UserID,
 	updateTodo todo.UpdateTodo,
 ) (*todo.Todo, error) {
 	tx, err := ExtractTodoDB(ctx)
@@ -52,10 +56,11 @@ func (w *TodoWriter) UpdateTodo(
 
 	db := tx.WithContext(ctx)
 
-	var todo todo.Todo
+	var t todo.Todo
 	if err := db.
 		Where("id = ? AND deleted_at IS NULL", todoID).
-		First(&todo).
+		Where("user_id = ?", userID).
+		First(&t).
 		Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -63,23 +68,26 @@ func (w *TodoWriter) UpdateTodo(
 		return nil, err
 	}
 
-	todo.Description = updateTodo.Description
 	if updateTodo.Task != nil {
-		todo.Task = *updateTodo.Task
+		t.Task = *updateTodo.Task
 	}
 	if updateTodo.Status != nil {
-		todo.Status = *updateTodo.Status
+		t.Status = *updateTodo.Status
+	}
+	if updateTodo.Description != nil {
+		t.Description = updateTodo.Description
 	}
 
-	if err := db.Save(&todo).Error; err != nil {
+	if err := db.Save(&t).Error; err != nil {
 		return nil, err
 	}
-	return &todo, nil
+	return &t, nil
 }
 
-func (w *TodoWriter) SoftDeleteTodo(
+func (w *todoWriter) SoftDeleteTodo(
 	ctx context.Context,
 	todoID todo.TodoID,
+	userID todo.UserID,
 ) error {
 	tx, err := ExtractTodoDB(ctx)
 	if err != nil {
@@ -88,10 +96,20 @@ func (w *TodoWriter) SoftDeleteTodo(
 
 	db := tx.WithContext(ctx)
 
+	var t todo.Todo
 	if err := db.
 		Where("id = ? AND deleted_at IS NULL", todoID).
-		Delete(&todo.Todo{}).
+		Where("user_id = ?", userID).
+		First(&t).
 		Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		}
+		return err
+	}
+
+	t.DeletedAt = cast.Ptr(time.Now())
+	if err := db.Save(&t).Error; err != nil {
 		return err
 	}
 	return nil
