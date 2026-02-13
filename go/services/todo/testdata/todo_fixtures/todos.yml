@@ -1,0 +1,44 @@
+- id: 1
+  user_id: 1
+  task: "todo task 1"
+  description: "todo description 1"
+  status: 0
+  created_at: 2026-01-01T00:00:00Z
+  updated_at: 2026-01-01T00:00:00Z
+  deleted_at: NULL
+
+- id: 2
+  user_id: 1
+  task: "todo task 2"
+  description: "todo description 2"
+  status: 1
+  created_at: 2026-01-02T00:00:00Z
+  updated_at: 2026-01-02T00:00:00Z
+  deleted_at: NULL
+
+- id: 3
+  user_id: 2
+  task: "todo task 3"
+  description: "todo description 3"
+  status: 0
+  created_at: 2026-01-03T00:00:00Z
+  updated_at: 2026-01-03T00:00:00Z
+  deleted_at: NULL
+
+- id: 4
+  user_id: 3
+  task: "todo task 4"
+  description: "todo description 4"
+  status: 1
+  created_at: 2026-01-04T00:00:00Z
+  updated_at: 2026-01-04T00:00:00Z
+  deleted_at: NULL
+
+- id: 5
+  user_id: 1
+  task: "todo task 5"
+  description: "todo description 5"
+  status: 0
+  created_at: 2026-01-05T00:00:00Z
+  updated_at: 2026-01-05T00:00:00Z
+  deleted_at: 2026-01-06T00:00:00Z

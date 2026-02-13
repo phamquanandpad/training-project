@@ -6,8 +6,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/phamquanandpad/training-project/services/todo/internal/domain/model/todo"
-	"github.com/phamquanandpad/training-project/services/todo/internal/errors"
+	"github.com/phamquanandpad/training-project/go/services/todo/internal/domain/model/todo"
+	"github.com/phamquanandpad/training-project/go/services/todo/internal/errors"
 )
 
 type TodoDBKey struct{}
