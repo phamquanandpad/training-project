@@ -11,14 +11,17 @@ service TodoService {
     rpc PostTodo(PostTodoRequest) returns (PostTodoResponse) {}
     rpc PutTodo(PutTodoRequest) returns (PutTodoResponse) {}
     rpc DeleteTodo(DeleteTodoRequest) returns (DeleteTodoResponse) {}
+
+	rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+	rpc PostUser(PostUserRequest) returns (PostUserResponse) {}
 }
 
 message UserAttributes { int64 user_id = 1; }
 
 message ListTodosRequest {
     UserAttributes user_attributes = 1;
-    int64 offset = 2;
-    int64 limit = 3;
+    optional int64 offset = 2;
+    optional int64 limit = 3;
 }
 
 message ListTodosResponse {
@@ -64,3 +67,17 @@ message DeleteTodoRequest {
 }
 
 message DeleteTodoResponse {}
+
+message GetUserRequest {
+	int64 user_id = 1;
+}
+
+message GetUserResponse {
+	common.v1.User user = 1;
+}
+
+message PostUserRequest {
+	common.v1.User user = 1;
+}
+
+message PostUserResponse {}

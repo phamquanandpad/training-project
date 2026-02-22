@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package auth.v1;
+option go_package = "github.com/phamquanandpad/training-project/grpc/go/auth/v1;auth_v1";
+
+service AuthService {
+    rpc Login(LoginRequest) returns (LoginResponse) {}
+    rpc Register(RegisterRequest) returns (RegisterResponse) {}
+    rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
+    rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse) {}
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64  access_token_expires_second = 3;
+  int64 refresh_token_expires_second = 4;
+  string username = 5;
+  int64 user_id = 6;
+}
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  string username = 3;
+}
+
+message RegisterResponse {}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message RefreshTokenResponse {
+  string access_token = 1;
+  int64  access_token_expires_second = 2;
+}
+
+message VerifyTokenRequest {
+    string access_token = 1;
+}
+
+message VerifyTokenResponse {
+    int64 user_id = 1;
+}
