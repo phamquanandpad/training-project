@@ -20,8 +20,8 @@ message UserAttributes { int64 user_id = 1; }
 
 message ListTodosRequest {
     UserAttributes user_attributes = 1;
-    int64 offset = 2;
-    int64 limit = 3;
+    optional int64 offset = 2;
+    optional int64 limit = 3;
 }
 
 message ListTodosResponse {

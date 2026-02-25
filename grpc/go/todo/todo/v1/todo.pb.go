@@ -69,8 +69,8 @@ func (x *UserAttributes) GetUserId() int64 {
 type ListTodosRequest struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	UserAttributes *UserAttributes        `protobuf:"bytes,1,opt,name=user_attributes,json=userAttributes,proto3" json:"user_attributes,omitempty"`
-	Offset         int64                  `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"`
-	Limit          int64                  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Offset         *int64                 `protobuf:"varint,2,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
+	Limit          *int64                 `protobuf:"varint,3,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -113,15 +113,15 @@ func (x *ListTodosRequest) GetUserAttributes() *UserAttributes {
 }
 
 func (x *ListTodosRequest) GetOffset() int64 {
-	if x != nil {
-		return x.Offset
+	if x != nil && x.Offset != nil {
+		return *x.Offset
 	}
 	return 0
 }
 
 func (x *ListTodosRequest) GetLimit() int64 {
-	if x != nil {
-		return x.Limit
+	if x != nil && x.Limit != nil {
+		return *x.Limit
 	}
 	return 0
 }
@@ -768,11 +768,13 @@ const file_todo_todo_v1_todo_proto_rawDesc = "" +
 	"\n" +
 	"\x17todo/todo/v1/todo.proto\x12\ftodo.todo.v1\x1a\x1ftodo/common/v1/todo_model.proto\")\n" +
 	"\x0eUserAttributes\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\x03R\x06userId\"\x87\x01\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\"\xa6\x01\n" +
 	"\x10ListTodosRequest\x12E\n" +
-	"\x0fuser_attributes\x18\x01 \x01(\v2\x1c.todo.todo.v1.UserAttributesR\x0euserAttributes\x12\x16\n" +
-	"\x06offset\x18\x02 \x01(\x03R\x06offset\x12\x14\n" +
-	"\x05limit\x18\x03 \x01(\x03R\x05limit\"U\n" +
+	"\x0fuser_attributes\x18\x01 \x01(\v2\x1c.todo.todo.v1.UserAttributesR\x0euserAttributes\x12\x1b\n" +
+	"\x06offset\x18\x02 \x01(\x03H\x00R\x06offset\x88\x01\x01\x12\x19\n" +
+	"\x05limit\x18\x03 \x01(\x03H\x01R\x05limit\x88\x01\x01B\t\n" +
+	"\a_offsetB\b\n" +
+	"\x06_limit\"U\n" +
 	"\x11ListTodosResponse\x12*\n" +
 	"\x05todos\x18\x01 \x03(\v2\x14.todo.common.v1.TodoR\x05todos\x12\x14\n" +
 	"\x05total\x18\x02 \x01(\x03R\x05total\"p\n" +
@@ -890,6 +892,7 @@ func file_todo_todo_v1_todo_proto_init() {
 	if File_todo_todo_v1_todo_proto != nil {
 		return
 	}
+	file_todo_todo_v1_todo_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
