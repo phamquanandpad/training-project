@@ -7,13 +7,14 @@ import (
 )
 
 type Config struct {
-	Env        string `required:"true" default:"local"`
-	ServerPort int    `required:"true" split_words:"true"`
-	DBHost     string `required:"true" split_words:"true"`
-	DBPort     int    `required:"true" split_words:"true"`
-	DBUser     string `required:"true" split_words:"true"`
-	DBPass     string `required:"true" split_words:"true"`
-	DBName     string `required:"true" split_words:"true"`
+	Env                  string `required:"true" default:"local"`
+	ServerPort           int    `required:"true" split_words:"true"`
+	DBHost               string `required:"true" split_words:"true"`
+	DBPort               int    `required:"true" split_words:"true"`
+	DBUser               string `required:"true" split_words:"true"`
+	DBPass               string `required:"true" split_words:"true"`
+	DBName               string `required:"true" split_words:"true"`
+	GrpcReflectionEnable bool   `required:"true" split_words:"true"`
 }
 
 func LoadConfig() (*Config, error) {
