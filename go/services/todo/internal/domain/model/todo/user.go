@@ -11,22 +11,17 @@ type User struct {
 	ID        UserID
 	Username  string
 	Email     *string
-	Password  string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time
 }
 
 type NewUser struct {
-	Username string
-	Email    *string
-	Password string
-}
-
-type UserOverview struct {
-	ID       UserID
-	Username string
-	Email    *string
+	ID        UserID
+	Username  string
+	Email     *string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type UserWithTodos struct {
