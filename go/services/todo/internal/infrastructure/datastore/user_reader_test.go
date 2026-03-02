@@ -47,7 +47,6 @@ func Test_userReader_GetUser(t *testing.T) {
 	}
 
 	for name, tt := range testTables {
-		tt := tt
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 

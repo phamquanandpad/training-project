@@ -15,6 +15,10 @@ const (
 	Done      TodoStatus = 2
 )
 
+type UserAttributes struct {
+	UserID UserID
+}
+
 func (ts TodoStatus) IsValid() bool {
 	switch ts {
 	case Pending, InProcess, Done:
@@ -32,7 +36,18 @@ type Todo struct {
 	Status      TodoStatus
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-	DeletedAt   *time.Time
+}
+
+type NewTodo struct {
+	Task        string
+	Description *string
+	Status      TodoStatus
+}
+
+type UpdateTodo struct {
+	Task        *string
+	Description *string
+	Status      *TodoStatus
 }
 
 func (id *TodoID) Int64() int64 {
@@ -54,12 +69,4 @@ func (id *TodoID) String() string {
 func NewTodoID(id int64) *TodoID {
 	todoID := TodoID(id)
 	return &todoID
-}
-
-func (t *Todo) IsDeleted() bool {
-	if t == nil {
-		return false
-	}
-
-	return t.DeletedAt != nil
 }

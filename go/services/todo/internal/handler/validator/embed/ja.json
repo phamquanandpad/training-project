@@ -1,0 +1,12 @@
+[
+    {
+        "locale": "ja",
+        "key": "ReportID",
+        "trans": "報告ID"
+    },
+    {
+        "locale": "ja",
+        "key": "URL",
+        "trans": "URL"
+    }
+]

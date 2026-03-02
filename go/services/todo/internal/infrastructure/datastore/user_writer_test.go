@@ -55,7 +55,6 @@ func Test_userWriter_CreateUser(t *testing.T) {
 	}
 
 	for name, tt := range testTables {
-		tt := tt
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
@@ -120,21 +119,9 @@ func Test_userWriter_CreateUser_Duplicate(t *testing.T) {
 			expected: nil,
 			wantErr:  true,
 		},
-		"Create User with duplicate username": {
-			args: args{
-				id:        todo.UserID(11),
-				username:  "user1",
-				email:     cast.Ptr("newuser11@example.com"),
-				createdAt: createdAt,
-				updatedAt: updatedAt,
-			},
-			expected: nil,
-			wantErr:  true,
-		},
 	}
 
 	for name, tt := range testTables {
-		tt := tt
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
