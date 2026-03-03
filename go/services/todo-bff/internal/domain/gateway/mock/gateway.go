@@ -80,35 +80,35 @@ func (m *MockTodoQueriesGateway) EXPECT() *MockTodoQueriesGatewayMockRecorder {
 	return m.recorder
 }
 
-// GetTodo mocks base method.
-func (m *MockTodoQueriesGateway) GetTodo(ctx context.Context, userAttributes todo.UserAttributes, todoID todo.TodoID) (*todo.Todo, error) {
+// Get mocks base method.
+func (m *MockTodoQueriesGateway) Get(ctx context.Context, userAttributes todo.UserAttributes, todoID todo.TodoID) (*todo.Todo, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetTodo", ctx, userAttributes, todoID)
+	ret := m.ctrl.Call(m, "Get", ctx, userAttributes, todoID)
 	ret0, _ := ret[0].(*todo.Todo)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetTodo indicates an expected call of GetTodo.
-func (mr *MockTodoQueriesGatewayMockRecorder) GetTodo(ctx, userAttributes, todoID any) *gomock.Call {
+// Get indicates an expected call of Get.
+func (mr *MockTodoQueriesGatewayMockRecorder) Get(ctx, userAttributes, todoID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTodo", reflect.TypeOf((*MockTodoQueriesGateway)(nil).GetTodo), ctx, userAttributes, todoID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockTodoQueriesGateway)(nil).Get), ctx, userAttributes, todoID)
 }
 
-// ListTodos mocks base method.
-func (m *MockTodoQueriesGateway) ListTodos(ctx context.Context, userAttributes todo.UserAttributes, limit, offset int) ([]*todo.Todo, int, error) {
+// List mocks base method.
+func (m *MockTodoQueriesGateway) List(ctx context.Context, userAttributes todo.UserAttributes, limit, offset int) ([]*todo.Todo, int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListTodos", ctx, userAttributes, limit, offset)
+	ret := m.ctrl.Call(m, "List", ctx, userAttributes, limit, offset)
 	ret0, _ := ret[0].([]*todo.Todo)
 	ret1, _ := ret[1].(int)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// ListTodos indicates an expected call of ListTodos.
-func (mr *MockTodoQueriesGatewayMockRecorder) ListTodos(ctx, userAttributes, limit, offset any) *gomock.Call {
+// List indicates an expected call of List.
+func (mr *MockTodoQueriesGatewayMockRecorder) List(ctx, userAttributes, limit, offset any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTodos", reflect.TypeOf((*MockTodoQueriesGateway)(nil).ListTodos), ctx, userAttributes, limit, offset)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockTodoQueriesGateway)(nil).List), ctx, userAttributes, limit, offset)
 }
 
 // MockTodoCommandsGateway is a mock of TodoCommandsGateway interface.
@@ -135,48 +135,48 @@ func (m *MockTodoCommandsGateway) EXPECT() *MockTodoCommandsGatewayMockRecorder 
 	return m.recorder
 }
 
-// CreateTodo mocks base method.
-func (m *MockTodoCommandsGateway) CreateTodo(ctx context.Context, userAttributes todo.UserAttributes, newTodo todo.NewTodo) (*todo.Todo, error) {
+// Create mocks base method.
+func (m *MockTodoCommandsGateway) Create(ctx context.Context, userAttributes todo.UserAttributes, newTodo todo.NewTodo) (*todo.Todo, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateTodo", ctx, userAttributes, newTodo)
+	ret := m.ctrl.Call(m, "Create", ctx, userAttributes, newTodo)
 	ret0, _ := ret[0].(*todo.Todo)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CreateTodo indicates an expected call of CreateTodo.
-func (mr *MockTodoCommandsGatewayMockRecorder) CreateTodo(ctx, userAttributes, newTodo any) *gomock.Call {
+// Create indicates an expected call of Create.
+func (mr *MockTodoCommandsGatewayMockRecorder) Create(ctx, userAttributes, newTodo any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTodo", reflect.TypeOf((*MockTodoCommandsGateway)(nil).CreateTodo), ctx, userAttributes, newTodo)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockTodoCommandsGateway)(nil).Create), ctx, userAttributes, newTodo)
 }
 
-// DeleteTodo mocks base method.
-func (m *MockTodoCommandsGateway) DeleteTodo(ctx context.Context, userAttributes todo.UserAttributes, todoID todo.TodoID) error {
+// Delete mocks base method.
+func (m *MockTodoCommandsGateway) Delete(ctx context.Context, userAttributes todo.UserAttributes, todoID todo.TodoID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteTodo", ctx, userAttributes, todoID)
+	ret := m.ctrl.Call(m, "Delete", ctx, userAttributes, todoID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// DeleteTodo indicates an expected call of DeleteTodo.
-func (mr *MockTodoCommandsGatewayMockRecorder) DeleteTodo(ctx, userAttributes, todoID any) *gomock.Call {
+// Delete indicates an expected call of Delete.
+func (mr *MockTodoCommandsGatewayMockRecorder) Delete(ctx, userAttributes, todoID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTodo", reflect.TypeOf((*MockTodoCommandsGateway)(nil).DeleteTodo), ctx, userAttributes, todoID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTodoCommandsGateway)(nil).Delete), ctx, userAttributes, todoID)
 }
 
-// UpdateTodo mocks base method.
-func (m *MockTodoCommandsGateway) UpdateTodo(ctx context.Context, userAttributes todo.UserAttributes, todoID todo.TodoID, updateTodo todo.UpdateTodo) (*todo.Todo, error) {
+// Update mocks base method.
+func (m *MockTodoCommandsGateway) Update(ctx context.Context, userAttributes todo.UserAttributes, todoID todo.TodoID, updateTodo todo.UpdateTodo) (*todo.Todo, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateTodo", ctx, userAttributes, todoID, updateTodo)
+	ret := m.ctrl.Call(m, "Update", ctx, userAttributes, todoID, updateTodo)
 	ret0, _ := ret[0].(*todo.Todo)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// UpdateTodo indicates an expected call of UpdateTodo.
-func (mr *MockTodoCommandsGatewayMockRecorder) UpdateTodo(ctx, userAttributes, todoID, updateTodo any) *gomock.Call {
+// Update indicates an expected call of Update.
+func (mr *MockTodoCommandsGatewayMockRecorder) Update(ctx, userAttributes, todoID, updateTodo any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTodo", reflect.TypeOf((*MockTodoCommandsGateway)(nil).UpdateTodo), ctx, userAttributes, todoID, updateTodo)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockTodoCommandsGateway)(nil).Update), ctx, userAttributes, todoID, updateTodo)
 }
 
 // MockAuthReaderGateway is a mock of AuthReaderGateway interface.

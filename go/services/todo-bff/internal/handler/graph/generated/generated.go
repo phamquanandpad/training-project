@@ -44,17 +44,16 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateTodo   func(childComplexity int, in model.PostTodoRequest) int
-		DeleteTodo   func(childComplexity int, in model.DeleteTodoRequest) int
-		Login        func(childComplexity int, in model.LoginRequest) int
-		RefreshToken func(childComplexity int) int
-		Register     func(childComplexity int, in model.RegisterRequest) int
-		UpdateTodo   func(childComplexity int, in model.PutTodoRequest) int
+		CreateTodo func(childComplexity int, in model.PostTodoRequest) int
+		DeleteTodo func(childComplexity int, in model.DeleteTodoRequest) int
+		Login      func(childComplexity int, in model.LoginRequest) int
+		Register   func(childComplexity int, in model.RegisterRequest) int
+		UpdateTodo func(childComplexity int, in model.PutTodoRequest) int
 	}
 
 	Query struct {
-		GetTodo  func(childComplexity int, in model.GetTodoRequest) int
-		ListTodo func(childComplexity int, in model.ListTodosRequest) int
+		GetTodo   func(childComplexity int, in model.GetTodoRequest) int
+		ListTodos func(childComplexity int, in model.ListTodosRequest) int
 	}
 
 	Todo struct {
@@ -73,11 +72,10 @@ type MutationResolver interface {
 	DeleteTodo(ctx context.Context, in model.DeleteTodoRequest) (bool, error)
 	Login(ctx context.Context, in model.LoginRequest) (bool, error)
 	Register(ctx context.Context, in model.RegisterRequest) (bool, error)
-	RefreshToken(ctx context.Context) (bool, error)
 }
 type QueryResolver interface {
 	GetTodo(ctx context.Context, in model.GetTodoRequest) (*todo.Todo, error)
-	ListTodo(ctx context.Context, in model.ListTodosRequest) (*model.ListTodosResponse, error)
+	ListTodos(ctx context.Context, in model.ListTodosRequest) (*model.ListTodosResponse, error)
 }
 type TodoResolver interface {
 	ID(ctx context.Context, obj *todo.Todo) (string, error)
@@ -145,12 +143,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Mutation.Login(childComplexity, args["in"].(model.LoginRequest)), true
-	case "Mutation.refreshToken":
-		if e.ComplexityRoot.Mutation.RefreshToken == nil {
-			break
-		}
-
-		return e.ComplexityRoot.Mutation.RefreshToken(childComplexity), true
 	case "Mutation.register":
 		if e.ComplexityRoot.Mutation.Register == nil {
 			break
@@ -186,17 +178,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Query.GetTodo(childComplexity, args["in"].(model.GetTodoRequest)), true
 
-	case "Query.listTodo":
-		if e.ComplexityRoot.Query.ListTodo == nil {
+	case "Query.listTodos":
+		if e.ComplexityRoot.Query.ListTodos == nil {
 			break
 		}
 
-		args, err := ec.field_Query_listTodo_args(ctx, rawArgs)
+		args, err := ec.field_Query_listTodos_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.ListTodo(childComplexity, args["in"].(model.ListTodosRequest)), true
+		return e.ComplexityRoot.Query.ListTodos(childComplexity, args["in"].(model.ListTodosRequest)), true
 
 	case "Todo.createdAt":
 		if e.ComplexityRoot.Todo.CreatedAt == nil {
@@ -390,7 +382,7 @@ input DeleteTodoRequest {
 
 type Query {
   getTodo(in: GetTodoRequest!): Todo!
-  listTodo(in: ListTodosRequest!): ListTodosResponse!
+  listTodos(in: ListTodosRequest!): ListTodosResponse!
 }
 
 type Mutation {
@@ -399,7 +391,6 @@ type Mutation {
   deleteTodo(in: DeleteTodoRequest!): Boolean!
   login(in: LoginRequest!): Boolean!
   register(in: RegisterRequest!): Boolean!
-  refreshToken: Boolean!
 }
 `, BuiltIn: false},
 }
@@ -486,7 +477,7 @@ func (ec *executionContext) field_Query_getTodo_args(ctx context.Context, rawArg
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_listTodo_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Query_listTodos_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "in", ec.unmarshalNListTodosRequest2githubᚗcomᚋphamquanandpadᚋtrainingᚑprojectᚋgoᚋservicesᚋtodoᚑbffᚋinternalᚋhandlerᚋgraphᚋmodelᚐListTodosRequest)
@@ -854,35 +845,6 @@ func (ec *executionContext) fieldContext_Mutation_register(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_refreshToken(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Mutation_refreshToken,
-		func(ctx context.Context) (any, error) {
-			return ec.Resolvers.Mutation().RefreshToken(ctx)
-		},
-		nil,
-		ec.marshalNBoolean2bool,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Mutation_refreshToken(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Query_getTodo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -938,15 +900,15 @@ func (ec *executionContext) fieldContext_Query_getTodo(ctx context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_listTodo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_listTodos(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Query_listTodo,
+		ec.fieldContext_Query_listTodos,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().ListTodo(ctx, fc.Args["in"].(model.ListTodosRequest))
+			return ec.Resolvers.Query().ListTodos(ctx, fc.Args["in"].(model.ListTodosRequest))
 		},
 		nil,
 		ec.marshalNListTodosResponse2ᚖgithubᚗcomᚋphamquanandpadᚋtrainingᚑprojectᚋgoᚋservicesᚋtodoᚑbffᚋinternalᚋhandlerᚋgraphᚋmodelᚐListTodosResponse,
@@ -955,7 +917,7 @@ func (ec *executionContext) _Query_listTodo(ctx context.Context, field graphql.C
 	)
 }
 
-func (ec *executionContext) fieldContext_Query_listTodo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_listTodos(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -978,7 +940,7 @@ func (ec *executionContext) fieldContext_Query_listTodo(ctx context.Context, fie
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_listTodo_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_listTodos_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -3061,13 +3023,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "refreshToken":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_refreshToken(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3132,7 +3087,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "listTodo":
+		case "listTodos":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -3141,7 +3096,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_listTodo(ctx, field)
+				res = ec._Query_listTodos(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

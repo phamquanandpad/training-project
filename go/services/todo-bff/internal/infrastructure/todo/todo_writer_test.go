@@ -2,6 +2,7 @@ package todo
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -18,7 +19,7 @@ import (
 	"github.com/phamquanandpad/training-project/go/pkg/cast"
 )
 
-func Test_todoWriter_CreateTodo(t *testing.T) {
+func Test_todoWriter_Create(t *testing.T) {
 	t.Parallel()
 
 	type fields struct {
@@ -80,6 +81,27 @@ func Test_todoWriter_CreateTodo(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		"Fail when gRPC client returns error on CreateTodo": {
+			prepare: func(f *fields) {
+				f.mockTodoServiceClient.
+					EXPECT().
+					PostTodo(gomock.Any(), gomock.Any()).
+					Return(nil, errors.New("rpc error: internal server error")).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				userAttributes: todo_model.UserAttributes{
+					UserID: todo_model.UserID(1),
+				},
+				newTodo: todo_model.NewTodo{
+					Task:   "todo task 1",
+					Status: todo_model.Pending,
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
 	}
 
 	for name, tt := range testTables {
@@ -96,7 +118,7 @@ func Test_todoWriter_CreateTodo(t *testing.T) {
 			}
 
 			writer := NewTodoWriter(f.mockTodoServiceClient)
-			actual, err := writer.CreateTodo(tt.args.ctx, tt.args.userAttributes, tt.args.newTodo)
+			actual, err := writer.Create(tt.args.ctx, tt.args.userAttributes, tt.args.newTodo)
 			if tt.wantErr {
 				if err == nil {
 					t.Errorf("TodoWriter.CreateTodo() error = %v, wantErr %v", err, tt.wantErr)
@@ -120,7 +142,7 @@ func Test_todoWriter_CreateTodo(t *testing.T) {
 	}
 }
 
-func Test_todoWriter_UpdateTodo(t *testing.T) {
+func Test_todoWriter_Update(t *testing.T) {
 	t.Parallel()
 
 	type fields struct {
@@ -185,6 +207,27 @@ func Test_todoWriter_UpdateTodo(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		"Fail when gRPC client returns error on UpdateTodo": {
+			prepare: func(f *fields) {
+				f.mockTodoServiceClient.
+					EXPECT().
+					PutTodo(gomock.Any(), gomock.Any()).
+					Return(nil, errors.New("rpc error: todo not found")).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				userAttributes: todo_model.UserAttributes{
+					UserID: todo_model.UserID(1),
+				},
+				todoID: todo_model.TodoID(999),
+				updateTodo: todo_model.UpdateTodo{
+					Task: cast.Ptr("updated task"),
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
 	}
 
 	for name, tt := range testTables {
@@ -201,7 +244,7 @@ func Test_todoWriter_UpdateTodo(t *testing.T) {
 			}
 
 			writer := NewTodoWriter(f.mockTodoServiceClient)
-			actual, err := writer.UpdateTodo(tt.args.ctx, tt.args.userAttributes, tt.args.todoID, tt.args.updateTodo)
+			actual, err := writer.Update(tt.args.ctx, tt.args.userAttributes, tt.args.todoID, tt.args.updateTodo)
 			if tt.wantErr {
 				if err == nil {
 					t.Errorf("TodoWriter.UpdateTodo() error = %v, wantErr %v", err, tt.wantErr)
@@ -225,7 +268,7 @@ func Test_todoWriter_UpdateTodo(t *testing.T) {
 	}
 }
 
-func Test_todoWriter_DeleteTodo(t *testing.T) {
+func Test_todoWriter_Delete(t *testing.T) {
 	t.Parallel()
 
 	type fields struct {
@@ -265,6 +308,23 @@ func Test_todoWriter_DeleteTodo(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		"Fail when gRPC client returns error on DeleteTodo": {
+			prepare: func(f *fields) {
+				f.mockTodoServiceClient.
+					EXPECT().
+					DeleteTodo(gomock.Any(), gomock.Any()).
+					Return(nil, errors.New("rpc error: todo not found")).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				userAttributes: todo_model.UserAttributes{
+					UserID: todo_model.UserID(1),
+				},
+				todoID: todo_model.TodoID(999),
+			},
+			wantErr: true,
+		},
 	}
 
 	for name, tt := range testTables {
@@ -281,7 +341,7 @@ func Test_todoWriter_DeleteTodo(t *testing.T) {
 			}
 
 			writer := NewTodoWriter(f.mockTodoServiceClient)
-			err := writer.DeleteTodo(tt.args.ctx, tt.args.userAttributes, tt.args.todoID)
+			err := writer.Delete(tt.args.ctx, tt.args.userAttributes, tt.args.todoID)
 			if tt.wantErr {
 				if err == nil {
 					t.Errorf("TodoWriter.DeleteTodo() error = %v, wantErr %v", err, tt.wantErr)

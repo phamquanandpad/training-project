@@ -29,7 +29,6 @@ type GetUserArgs struct {
 }
 
 type GetUserTestcase struct {
-	name     string
 	prepare  func(f *PrepareGetUserFields)
 	args     GetUserArgs
 	expected *output.UserGetter
@@ -41,7 +40,6 @@ func Test_userGetter_Get(t *testing.T) {
 
 	testTables := map[string]GetUserTestcase{
 		"Get User successfully": {
-			name: "Get User successfully",
 			prepare: func(f *PrepareGetUserFields) {
 				f.mockBinder.
 					EXPECT().
@@ -73,7 +71,6 @@ func Test_userGetter_Get(t *testing.T) {
 			wantErr: false,
 		},
 		"User not found": {
-			name: "User not found",
 			prepare: func(f *PrepareGetUserFields) {
 				f.mockBinder.
 					EXPECT().
@@ -97,7 +94,6 @@ func Test_userGetter_Get(t *testing.T) {
 			wantErr:  true,
 		},
 		"Internal error when getting user": {
-			name: "Internal error when getting user",
 			prepare: func(f *PrepareGetUserFields) {
 				f.mockBinder.
 					EXPECT().
@@ -122,8 +118,8 @@ func Test_userGetter_Get(t *testing.T) {
 		},
 	}
 
-	for _, tt := range testTables {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range testTables {
+		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			t.Cleanup(ctrl.Finish)
 

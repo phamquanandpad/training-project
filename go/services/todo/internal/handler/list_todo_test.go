@@ -2,6 +2,7 @@ package handler_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/go-playground/validator/v10"
@@ -79,6 +80,7 @@ func Test_ListTodos(t *testing.T) {
 				Todos: []*todo_common_v1.Todo{
 					{
 						Id:          1,
+						UserId:      1,
 						Task:        "todo task 1",
 						Description: "todo description 1",
 						Status:      todo_common_v1.TodoStatus_TODO_STATUS_PENDING,
@@ -87,6 +89,26 @@ func Test_ListTodos(t *testing.T) {
 				Total: 1,
 			},
 			wantErr: false,
+		},
+		"Usecase returns error": {
+			prepare: func(f *fields) {
+				f.mockTodoLister.
+					EXPECT().
+					List(gomock.Any(), gomock.Any()).
+					Return(nil, errors.New("database error")).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &todo_v1.ListTodosRequest{
+					UserAttributes: &todo_v1.UserAttributes{
+						UserId: 1,
+					},
+					Limit: cast.Ptr(int64(10)),
+				},
+			},
+			expected: nil,
+			wantErr:  true,
 		},
 	}
 

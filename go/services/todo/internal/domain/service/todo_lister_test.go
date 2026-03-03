@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 
@@ -29,7 +30,6 @@ type ListTodoArgs struct {
 }
 
 type ListTodoTestcase struct {
-	name     string
 	prepare  func(f *PrepareListTodoFields)
 	args     ListTodoArgs
 	expected *output.TodoLister
@@ -43,9 +43,8 @@ func Test_todoLister_List(t *testing.T) {
 	updatedAt := now
 	limit := int64(10)
 	offset := int64(0)
-	testTables := []ListTodoTestcase{
-		{
-			name: "List Todos successfully",
+	testTables := map[string]ListTodoTestcase{
+		"List Todos successfully": {
 			prepare: func(f *PrepareListTodoFields) {
 				existedUser := &todo.User{
 					ID: todo.UserID(1),
@@ -118,10 +117,41 @@ func Test_todoLister_List(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		"Internal error when listing todos": {
+			prepare: func(f *PrepareListTodoFields) {
+				existedUser := &todo.User{
+					ID: todo.UserID(1),
+				}
+				f.ctx = todo.WithUser(f.ctx, existedUser)
+				f.mockBinder.
+					EXPECT().
+					Bind(gomock.Any()).
+					Return(f.ctx).
+					Times(1)
+
+				f.mockTodoQueriesGateway.
+					EXPECT().
+					ListTodos(f.ctx, todo.UserID(1), int(limit), int(offset)).
+					Return(nil, 0, errors.New("database error")).
+					Times(1)
+			},
+			args: ListTodoArgs{
+				ctx: context.Background(),
+				in: &input.TodoLister{
+					UserAttributes: input.UserAttributes{
+						UserID: todo.UserID(1),
+					},
+					Limit:  limit,
+					Offset: offset,
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
 	}
 
-	for _, tt := range testTables {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range testTables {
+		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 
 			t.Cleanup(ctrl.Finish)

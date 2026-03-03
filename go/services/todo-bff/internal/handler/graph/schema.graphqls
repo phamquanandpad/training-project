@@ -63,7 +63,7 @@ input DeleteTodoRequest {
 
 type Query {
   getTodo(in: GetTodoRequest!): Todo!
-  listTodo(in: ListTodosRequest!): ListTodosResponse!
+  listTodos(in: ListTodosRequest!): ListTodosResponse!
 }
 
 type Mutation {

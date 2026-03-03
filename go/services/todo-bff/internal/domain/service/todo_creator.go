@@ -28,7 +28,7 @@ func (s todoCreator) CreateTodo(
 	ctx context.Context,
 	in *input.TodoCreator,
 ) (*output.TodoCreator, error) {
-	todo, err := s.todoCommandsGateway.CreateTodo(
+	todo, err := s.todoCommandsGateway.Create(
 		ctx,
 		todo.UserAttributes{
 			UserID: in.UserID,

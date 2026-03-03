@@ -2,6 +2,7 @@ package todo
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 
@@ -20,7 +21,7 @@ import (
 	"github.com/phamquanandpad/training-project/go/pkg/cast"
 )
 
-func Test_todoReader_GetTodo(t *testing.T) {
+func Test_todoReader_Get(t *testing.T) {
 	t.Parallel()
 
 	type fields struct {
@@ -76,6 +77,24 @@ func Test_todoReader_GetTodo(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		"Fail when gRPC client returns error on GetTodo": {
+			prepare: func(f *fields) {
+				f.mockTodoServiceClient.
+					EXPECT().
+					GetTodo(gomock.Any(), gomock.Any()).
+					Return(nil, errors.New("rpc error: todo not found")).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				userAttributes: todo_model.UserAttributes{
+					UserID: todo_model.UserID(1),
+				},
+				todoID: todo_model.TodoID(999),
+			},
+			expected: nil,
+			wantErr:  true,
+		},
 	}
 
 	for name, tt := range testTables {
@@ -92,7 +111,7 @@ func Test_todoReader_GetTodo(t *testing.T) {
 			}
 
 			reader := NewTodoReader(f.mockTodoServiceClient)
-			actual, err := reader.GetTodo(tt.args.ctx, tt.args.userAttributes, tt.args.todoID)
+			actual, err := reader.Get(tt.args.ctx, tt.args.userAttributes, tt.args.todoID)
 			if tt.wantErr {
 				if err == nil {
 					t.Errorf("TodoReader.GetTodo() error = %v, wantErr %v", err, tt.wantErr)
@@ -116,7 +135,7 @@ func Test_todoReader_GetTodo(t *testing.T) {
 	}
 }
 
-func Test_todoReader_ListTodos(t *testing.T) {
+func Test_todoReader_List(t *testing.T) {
 	t.Parallel()
 
 	type fields struct {
@@ -217,6 +236,28 @@ func Test_todoReader_ListTodos(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		"Fail when gRPC client returns error on ListTodos": {
+			prepare: func(f *fields) {
+				f.mockTodoServiceClient.
+					EXPECT().
+					ListTodos(gomock.Any(), gomock.Any()).
+					Return(nil, errors.New("rpc error: internal server error")).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				userAttributes: todo_model.UserAttributes{
+					UserID: todo_model.UserID(1),
+				},
+				limit:  limit,
+				offset: offset,
+			},
+			expected: expected{
+				todos: nil,
+				total: 0,
+			},
+			wantErr: true,
+		},
 	}
 
 	for name, tt := range testTables {
@@ -233,7 +274,7 @@ func Test_todoReader_ListTodos(t *testing.T) {
 			}
 
 			reader := NewTodoReader(f.mockTodoServiceClient)
-			actual, total, err := reader.ListTodos(tt.args.ctx, tt.args.userAttributes, tt.args.limit, tt.args.offset)
+			actual, total, err := reader.List(tt.args.ctx, tt.args.userAttributes, tt.args.limit, tt.args.offset)
 			if tt.wantErr {
 				if err == nil {
 					t.Errorf("TodoReader.ListTodos() error = %v, wantErr %v", err, tt.wantErr)

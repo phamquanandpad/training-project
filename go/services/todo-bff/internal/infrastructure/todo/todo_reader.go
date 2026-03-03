@@ -22,7 +22,7 @@ func NewTodoReader(client todo_v1.TodoServiceClient) gateway.TodoQueriesGateway 
 	}
 }
 
-func (r *todoReader) GetTodo(
+func (r *todoReader) Get(
 	ctx context.Context,
 	userAttributes todo.UserAttributes,
 	todoID todo.TodoID,
@@ -42,7 +42,7 @@ func (r *todoReader) GetTodo(
 	return grpcTodoToModel(res.Todo), nil
 }
 
-func (r *todoReader) ListTodos(
+func (r *todoReader) List(
 	ctx context.Context,
 	userAttributes todo.UserAttributes,
 	limit int,

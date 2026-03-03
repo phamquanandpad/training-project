@@ -3,6 +3,7 @@ package datastore
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -67,7 +68,9 @@ func newSQLHandler(dsn string) (*gorm.DB, func(), error) {
 	conn.Set("gorm:table_options", "ENGINE=InnoDB")
 
 	return conn, func() {
-		_ = db.Close()
+		if err := db.Close(); err != nil {
+			log.Printf("failed to close db: %v", err)
+		}
 	}, nil
 }
 

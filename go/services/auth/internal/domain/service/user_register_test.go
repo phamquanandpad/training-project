@@ -9,7 +9,6 @@ import (
 	"go.uber.org/mock/gomock"
 
 	mock_gateway "github.com/phamquanandpad/training-project/go/services/auth/internal/domain/gateway/mock"
-
 	auth_models "github.com/phamquanandpad/training-project/go/services/auth/internal/domain/model/auth"
 
 	"github.com/phamquanandpad/training-project/go/pkg/cast"
@@ -32,7 +31,6 @@ type RegisterArgs struct {
 }
 
 type RegisterTestcase struct {
-	name    string
 	prepare func(f *PrepareRegisterFields)
 	args    RegisterArgs
 	wantErr bool
@@ -45,7 +43,6 @@ func Test_userRegister_Register(t *testing.T) {
 
 	testTables := map[string]RegisterTestcase{
 		"Register successfully": {
-			name: "Register successfully",
 			prepare: func(f *PrepareRegisterFields) {
 				f.mockBinder.
 					EXPECT().
@@ -94,7 +91,6 @@ func Test_userRegister_Register(t *testing.T) {
 			wantErr: false,
 		},
 		"Email already exists": {
-			name: "Email already exists",
 			prepare: func(f *PrepareRegisterFields) {
 				f.mockBinder.
 					EXPECT().
@@ -122,7 +118,6 @@ func Test_userRegister_Register(t *testing.T) {
 			wantErr: true,
 		},
 		"Internal error on GetUserByEmail": {
-			name: "Internal error on GetUserByEmail",
 			prepare: func(f *PrepareRegisterFields) {
 				f.mockBinder.
 					EXPECT().
@@ -147,7 +142,6 @@ func Test_userRegister_Register(t *testing.T) {
 			wantErr: true,
 		},
 		"Internal error on CreateUser (auth DB)": {
-			name: "Internal error on CreateUser (auth DB)",
 			prepare: func(f *PrepareRegisterFields) {
 				f.mockBinder.
 					EXPECT().
@@ -178,7 +172,6 @@ func Test_userRegister_Register(t *testing.T) {
 			wantErr: true,
 		},
 		"Internal error on CreateUser (todo service)": {
-			name: "Internal error on CreateUser (todo service)",
 			prepare: func(f *PrepareRegisterFields) {
 				f.mockBinder.
 					EXPECT().
@@ -222,8 +215,8 @@ func Test_userRegister_Register(t *testing.T) {
 		},
 	}
 
-	for _, tt := range testTables {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range testTables {
+		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			t.Cleanup(ctrl.Finish)
 

@@ -140,44 +140,6 @@ func (r *mutationResolver) Register(ctx context.Context, in model.RegisterReques
 	return true, nil
 }
 
-// RefreshToken is the resolver for the refreshToken field.
-func (r *mutationResolver) RefreshToken(ctx context.Context) (bool, error) {
-	token := middleware.RefreshTokenFromContext(ctx)
-	if token == "" {
-		return false, app_errors.NewAuthNError(
-			"handler.graph.schema.resolvers",
-			fmt.Errorf("refresh token not found in context"),
-			&app_errors.LocalizedMessage{JaMessage: app_errors.AuthNJaMessage},
-		)
-	}
-
-	out, err := r.tokenRefresh.RefreshToken(ctx, &input.TokenRefresh{
-		RefreshToken: token,
-	})
-	if err != nil {
-		return false, err
-	}
-
-	w, ok := middleware.ResponseWriterFromContext(ctx)
-	if !ok {
-		return false, app_errors.NewInternalError(
-			"handler.graph.schema.resolvers",
-			fmt.Errorf("cannot get response writer"),
-		)
-	}
-
-	http.SetCookie(w, &http.Cookie{
-		Name:     middleware.AccessTokenCookieKey,
-		Value:    out.AccessToken.Token,
-		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteStrictMode,
-		Path:     "/",
-	})
-
-	return true, nil
-}
-
 // GetTodo is the resolver for the getTodo field.
 func (r *queryResolver) GetTodo(ctx context.Context, in model.GetTodoRequest) (*todo.Todo, error) {
 	userID := middleware.UserIDFromContext(ctx)
@@ -200,7 +162,7 @@ func (r *queryResolver) GetTodo(ctx context.Context, in model.GetTodoRequest) (*
 }
 
 // ListTodo is the resolver for the listTodo field.
-func (r *queryResolver) ListTodo(ctx context.Context, in model.ListTodosRequest) (*model.ListTodosResponse, error) {
+func (r *queryResolver) ListTodos(ctx context.Context, in model.ListTodosRequest) (*model.ListTodosResponse, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	out, err := r.todoLister.ListTodos(ctx, &input.TodoLister{
 		UserID: todo.UserID(userID.Int64()),

@@ -9,11 +9,11 @@ import (
 	"go.uber.org/mock/gomock"
 	"google.golang.org/protobuf/testing/protocmp"
 
+	auth_models "github.com/phamquanandpad/training-project/go/services/auth/internal/domain/model/auth"
+	app_errors "github.com/phamquanandpad/training-project/go/services/auth/internal/errors"
+	mock_usecase "github.com/phamquanandpad/training-project/go/services/auth/internal/usecase/mock"
 	auth_v1 "github.com/phamquanandpad/training-project/grpc/go/auth/v1"
 
-	mock_usecase "github.com/phamquanandpad/training-project/go/services/auth/internal/usecase/mock"
-
-	auth_models "github.com/phamquanandpad/training-project/go/services/auth/internal/domain/model/auth"
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/handler"
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/handler/requestbinder"
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/usecase/input"
@@ -63,6 +63,38 @@ func Test_VerifyToken(t *testing.T) {
 				UserId: 1,
 			},
 			wantErr: false,
+		},
+		"Missing access token returns validation error": {
+			prepare: func(f *fields) {
+				f.mockTokenVerify.EXPECT().VerifyToken(gomock.Any(), gomock.Any()).Times(0)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.VerifyTokenRequest{
+					AccessToken: "",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Usecase returns error": {
+			prepare: func(f *fields) {
+				f.mockTokenVerify.
+					EXPECT().
+					VerifyToken(gomock.Any(), &input.TokenVerify{
+						AccessToken: "invalid-token",
+					}).
+					Return(nil, app_errors.NewAuthNError("token is invalid", nil, nil)).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.VerifyTokenRequest{
+					AccessToken: "invalid-token",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
 		},
 	}
 

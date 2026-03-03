@@ -2,6 +2,7 @@ package handler_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/go-playground/validator/v10"
@@ -80,6 +81,28 @@ func Test_PostTodo(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		"Usecase returns error": {
+			prepare: func(f *fields) {
+				f.mockTodoCreator.
+					EXPECT().
+					Create(gomock.Any(), gomock.Any()).
+					Return(nil, errors.New("database error")).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &todo_v1.PostTodoRequest{
+					UserAttributes: &todo_v1.UserAttributes{
+						UserId: 1,
+					},
+					Task:        "todo task 1",
+					Description: "todo description 1",
+					Status:      todo_common_v1.TodoStatus_TODO_STATUS_INPROCESS,
+				},
+			},
+			expected: nil,
+			wantErr:  true,
 		},
 	}
 

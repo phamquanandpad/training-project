@@ -11,7 +11,6 @@ import (
 	"go.uber.org/mock/gomock"
 
 	mock_gateway "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/domain/gateway/mock"
-
 	todo_model "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/domain/model/todo"
 
 	"github.com/phamquanandpad/training-project/go/pkg/cast"
@@ -48,7 +47,7 @@ func Test_todoUpdater_UpdateTodo(t *testing.T) {
 				status := todo_model.InProcess
 				f.mockTodoCommandsGateway.
 					EXPECT().
-					UpdateTodo(f.ctx, todo_model.UserAttributes{
+					Update(f.ctx, todo_model.UserAttributes{
 						UserID: todo_model.UserID(1),
 					}, todo_model.TodoID(1), todo_model.UpdateTodo{
 						Task:        cast.Ptr("updated task"),
@@ -94,7 +93,7 @@ func Test_todoUpdater_UpdateTodo(t *testing.T) {
 				status := todo_model.InProcess
 				f.mockTodoCommandsGateway.
 					EXPECT().
-					UpdateTodo(f.ctx, todo_model.UserAttributes{
+					Update(f.ctx, todo_model.UserAttributes{
 						UserID: todo_model.UserID(1),
 					}, todo_model.TodoID(999), todo_model.UpdateTodo{
 						Task:        cast.Ptr("updated task"),
@@ -122,7 +121,7 @@ func Test_todoUpdater_UpdateTodo(t *testing.T) {
 				status := todo_model.InProcess
 				f.mockTodoCommandsGateway.
 					EXPECT().
-					UpdateTodo(f.ctx, todo_model.UserAttributes{
+					Update(f.ctx, todo_model.UserAttributes{
 						UserID: todo_model.UserID(1),
 					}, todo_model.TodoID(1), todo_model.UpdateTodo{
 						Task:        cast.Ptr("updated task"),

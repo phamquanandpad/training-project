@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	waitingTimeSecForGracefulShutdown = 30
+	waitingTimeSecForGracefulShutdown = 30 * time.Second
 )
 
 func initializeServer(
@@ -53,8 +53,8 @@ func main() {
 		log.Panic("failed to init validator", err)
 	}
 
-	server, cleaner := initializeServer(cfg, validate)
-	defer cleaner()
+	server, clean := initializeServer(cfg, validate)
+	defer clean()
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
@@ -95,7 +95,7 @@ func main() {
 	// Termination Processing
 	_, shutdownCancel := context.WithTimeout(
 		context.Background(),
-		waitingTimeSecForGracefulShutdown*time.Second,
+		waitingTimeSecForGracefulShutdown,
 	)
 	defer shutdownCancel()
 

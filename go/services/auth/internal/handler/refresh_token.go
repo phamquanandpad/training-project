@@ -29,7 +29,7 @@ func (h *authService) RefreshToken(
 
 func toRefreshTokenResponse(out *output.TokenRefresh) *auth_v1.RefreshTokenResponse {
 	return &auth_v1.RefreshTokenResponse{
-		AccessToken:              out.AccessToken,
-		AccessTokenExpiresSecond: int64(out.AccessTokenExpiresSecond),
+		AccessToken:               out.AccessToken,
+		AccessTokenExpireDuration: out.AccessTokenExpireDuration,
 	}
 }

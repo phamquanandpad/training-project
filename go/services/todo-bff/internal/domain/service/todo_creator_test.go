@@ -11,7 +11,6 @@ import (
 	"go.uber.org/mock/gomock"
 
 	mock_gateway "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/domain/gateway/mock"
-
 	todo_model "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/domain/model/todo"
 
 	"github.com/phamquanandpad/training-project/go/pkg/cast"
@@ -37,7 +36,7 @@ type TodoCreatorTestcase struct {
 	wantErr  bool
 }
 
-func Test_todoCreator_CreateTodo(t *testing.T) {
+func Test_todoCreator_Create(t *testing.T) {
 	t.Parallel()
 
 	now := time.Now()
@@ -47,7 +46,7 @@ func Test_todoCreator_CreateTodo(t *testing.T) {
 			prepare: func(f *PrepareTodoCreatorFields) {
 				f.mockTodoCommandsGateway.
 					EXPECT().
-					CreateTodo(f.ctx, todo_model.UserAttributes{
+					Create(f.ctx, todo_model.UserAttributes{
 						UserID: todo_model.UserID(1),
 					}, todo_model.NewTodo{
 						Task:        "todo task 1",
@@ -91,7 +90,7 @@ func Test_todoCreator_CreateTodo(t *testing.T) {
 			prepare: func(f *PrepareTodoCreatorFields) {
 				f.mockTodoCommandsGateway.
 					EXPECT().
-					CreateTodo(f.ctx, todo_model.UserAttributes{
+					Create(f.ctx, todo_model.UserAttributes{
 						UserID: todo_model.UserID(1),
 					}, todo_model.NewTodo{
 						Task:        "todo task 1",

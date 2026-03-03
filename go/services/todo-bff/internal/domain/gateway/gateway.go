@@ -13,13 +13,13 @@ type Binder interface {
 }
 
 type TodoQueriesGateway interface {
-	GetTodo(
+	Get(
 		ctx context.Context,
 		userAttributes todo.UserAttributes,
 		todoID todo.TodoID,
 	) (*todo.Todo, error)
 
-	ListTodos(
+	List(
 		ctx context.Context,
 		userAttributes todo.UserAttributes,
 		limit int,
@@ -28,20 +28,20 @@ type TodoQueriesGateway interface {
 }
 
 type TodoCommandsGateway interface {
-	CreateTodo(
+	Create(
 		ctx context.Context,
 		userAttributes todo.UserAttributes,
 		newTodo todo.NewTodo,
 	) (*todo.Todo, error)
 
-	UpdateTodo(
+	Update(
 		ctx context.Context,
 		userAttributes todo.UserAttributes,
 		todoID todo.TodoID,
 		updateTodo todo.UpdateTodo,
 	) (*todo.Todo, error)
 
-	DeleteTodo(
+	Delete(
 		ctx context.Context,
 		userAttributes todo.UserAttributes,
 		todoID todo.TodoID,

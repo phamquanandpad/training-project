@@ -7,10 +7,10 @@ import (
 )
 
 type JwtConfig struct {
-	AccessTokenSecret         string `required:"true" split_words:"true"`
-	RefreshTokenSecret        string `required:"true" split_words:"true"`
-	AccessTokenExpiresSecond  int    `required:"true" split_words:"true"`
-	RefreshTokenExpiresSecond int    `required:"true" split_words:"true"`
+	AccessTokenSecret          string `required:"true" split_words:"true"`
+	RefreshTokenSecret         string `required:"true" split_words:"true"`
+	AccessTokenExpireDuration  int64  `required:"true" split_words:"true"`
+	RefreshTokenExpireDuration int64  `required:"true" split_words:"true"`
 }
 
 func LoadJwtConfig() (*JwtConfig, error) {

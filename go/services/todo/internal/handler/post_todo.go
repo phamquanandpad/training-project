@@ -3,15 +3,11 @@ package handler
 import (
 	"context"
 
-	"google.golang.org/protobuf/types/known/timestamppb"
-
-	todo_common_v1 "github.com/phamquanandpad/training-project/grpc/go/todo/common/v1"
 	todo_v1 "github.com/phamquanandpad/training-project/grpc/go/todo/todo/v1"
 
-	"github.com/phamquanandpad/training-project/go/pkg/cast"
 	"github.com/phamquanandpad/training-project/go/services/todo/internal/domain/model/todo"
+	"github.com/phamquanandpad/training-project/go/services/todo/internal/handler/mapper"
 	"github.com/phamquanandpad/training-project/go/services/todo/internal/usecase/input"
-	"github.com/phamquanandpad/training-project/go/services/todo/internal/usecase/output"
 )
 
 func (h *todoService) PostTodo(
@@ -29,26 +25,7 @@ func (h *todoService) PostTodo(
 		return nil, err
 	}
 
-	return toPostTodoResponse(out), nil
-}
-
-func toPostTodoInput(in *todo_v1.PostTodoRequest) *input.TodoCreator {
-	return &input.TodoCreator{
-		Task:        in.GetTask(),
-		Description: cast.Ptr(in.GetDescription()),
-		Status:      todo.TodoStatus(in.GetStatus()),
-	}
-}
-
-func toPostTodoResponse(out *output.TodoCreator) *todo_v1.PostTodoResponse {
 	return &todo_v1.PostTodoResponse{
-		Todo: &todo_common_v1.Todo{
-			Id:          int64(out.ID),
-			Task:        out.Task,
-			Description: cast.Value(out.Description),
-			Status:      todo_common_v1.TodoStatus(out.Status),
-			CreatedAt:   timestamppb.New(out.CreatedAt),
-			UpdatedAt:   timestamppb.New(out.UpdatedAt),
-		},
-	}
+		Todo: mapper.ToTodoGRPCResponse((*todo.Todo)(out)),
+	}, nil
 }

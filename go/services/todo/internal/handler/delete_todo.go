@@ -25,9 +25,3 @@ func (h *todoService) DeleteTodo(
 
 	return &todo_v1.DeleteTodoResponse{}, nil
 }
-
-// func toDeleteTodoInput(in *todo_v1.DeleteTodoRequest) *input.TodoDeleter {
-// 	return &input.TodoDeleter{
-// 		ID: todo.TodoID(in.GetTodoId()),
-// 	}
-// }

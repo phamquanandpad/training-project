@@ -9,9 +9,9 @@ import (
 	"go.uber.org/mock/gomock"
 	"google.golang.org/protobuf/testing/protocmp"
 
-	auth_v1 "github.com/phamquanandpad/training-project/grpc/go/auth/v1"
-
+	app_errors "github.com/phamquanandpad/training-project/go/services/auth/internal/errors"
 	mock_usecase "github.com/phamquanandpad/training-project/go/services/auth/internal/usecase/mock"
+	auth_v1 "github.com/phamquanandpad/training-project/grpc/go/auth/v1"
 
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/handler"
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/handler/requestbinder"
@@ -61,6 +61,89 @@ func Test_Register(t *testing.T) {
 			},
 			expected: &auth_v1.RegisterResponse{},
 			wantErr:  false,
+		},
+		"Missing username returns validation error": {
+			prepare: func(f *fields) {
+				f.mockUserRegister.EXPECT().Register(gomock.Any(), gomock.Any()).Times(0)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.RegisterRequest{
+					Username: "",
+					Email:    "test@example.com",
+					Password: "password123",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Missing email returns validation error": {
+			prepare: func(f *fields) {
+				f.mockUserRegister.EXPECT().Register(gomock.Any(), gomock.Any()).Times(0)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.RegisterRequest{
+					Username: "testuser",
+					Email:    "",
+					Password: "password123",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Invalid email format returns validation error": {
+			prepare: func(f *fields) {
+				f.mockUserRegister.EXPECT().Register(gomock.Any(), gomock.Any()).Times(0)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.RegisterRequest{
+					Username: "testuser",
+					Email:    "not-an-email",
+					Password: "password123",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Password too short returns validation error": {
+			prepare: func(f *fields) {
+				f.mockUserRegister.EXPECT().Register(gomock.Any(), gomock.Any()).Times(0)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.RegisterRequest{
+					Username: "testuser",
+					Email:    "test@example.com",
+					Password: "abc",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Usecase returns error": {
+			prepare: func(f *fields) {
+				f.mockUserRegister.
+					EXPECT().
+					Register(gomock.Any(), &input.UserRegister{
+						Username: "testuser",
+						Email:    "existing@example.com",
+						Password: "password123",
+					}).
+					Return(app_errors.NewAlreadyExistsError("email already registered", nil, nil)).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.RegisterRequest{
+					Username: "testuser",
+					Email:    "existing@example.com",
+					Password: "password123",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
 		},
 	}
 

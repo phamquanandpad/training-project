@@ -11,7 +11,6 @@ import (
 	"go.uber.org/mock/gomock"
 
 	mock_gateway "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/domain/gateway/mock"
-
 	todo_model "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/domain/model/todo"
 
 	"github.com/phamquanandpad/training-project/go/pkg/cast"
@@ -47,7 +46,7 @@ func Test_todoLister_ListTodos(t *testing.T) {
 			prepare: func(f *PrepareTodoListerFields) {
 				f.mockTodoQueriesGateway.
 					EXPECT().
-					ListTodos(f.ctx, todo_model.UserAttributes{
+					List(f.ctx, todo_model.UserAttributes{
 						UserID: todo_model.UserID(1),
 					}, 10, 0).
 					Return([]*todo_model.Todo{
@@ -109,7 +108,7 @@ func Test_todoLister_ListTodos(t *testing.T) {
 			prepare: func(f *PrepareTodoListerFields) {
 				f.mockTodoQueriesGateway.
 					EXPECT().
-					ListTodos(f.ctx, todo_model.UserAttributes{
+					List(f.ctx, todo_model.UserAttributes{
 						UserID: todo_model.UserID(1),
 					}, 10, 0).
 					Return([]*todo_model.Todo{}, 0, nil).
@@ -133,7 +132,7 @@ func Test_todoLister_ListTodos(t *testing.T) {
 			prepare: func(f *PrepareTodoListerFields) {
 				f.mockTodoQueriesGateway.
 					EXPECT().
-					ListTodos(f.ctx, todo_model.UserAttributes{
+					List(f.ctx, todo_model.UserAttributes{
 						UserID: todo_model.UserID(1),
 					}, 10, 0).
 					Return(nil, 0, errors.New("gateway error")).

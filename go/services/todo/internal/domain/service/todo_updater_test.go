@@ -32,7 +32,6 @@ type UpdateTodoArgs struct {
 }
 
 type UpdateTodoTestcase struct {
-	name     string
 	prepare  func(f *PrepareUpdateTodoFields)
 	args     UpdateTodoArgs
 	expected *output.TodoUpdater
@@ -50,7 +49,6 @@ func Test_todoUpdater_Update(t *testing.T) {
 
 	testTables := map[string]UpdateTodoTestcase{
 		"Update Todo successfully": {
-			name: "Update Todo successfully",
 			prepare: func(f *PrepareUpdateTodoFields) {
 				f.ctx = todo.WithUser(f.ctx, existedUser)
 				f.mockBinder.
@@ -102,7 +100,6 @@ func Test_todoUpdater_Update(t *testing.T) {
 			wantErr: false,
 		},
 		"Internal error from CanAccessTodo": {
-			name: "Internal error from CanAccessTodo",
 			prepare: func(f *PrepareUpdateTodoFields) {
 				f.ctx = todo.WithUser(f.ctx, existedUser)
 				f.mockBinder.
@@ -127,7 +124,6 @@ func Test_todoUpdater_Update(t *testing.T) {
 			wantErr:  true,
 		},
 		"Cannot access todo (unauthorized)": {
-			name: "Cannot access todo (unauthorized)",
 			prepare: func(f *PrepareUpdateTodoFields) {
 				f.ctx = todo.WithUser(f.ctx, existedUser)
 				f.mockBinder.
@@ -152,7 +148,6 @@ func Test_todoUpdater_Update(t *testing.T) {
 			wantErr:  true,
 		},
 		"Internal error when updating todo": {
-			name: "Internal error when updating todo",
 			prepare: func(f *PrepareUpdateTodoFields) {
 				f.ctx = todo.WithUser(f.ctx, existedUser)
 				f.mockBinder.
@@ -185,8 +180,8 @@ func Test_todoUpdater_Update(t *testing.T) {
 		},
 	}
 
-	for _, tt := range testTables {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range testTables {
+		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			t.Cleanup(ctrl.Finish)
 

@@ -3,9 +3,8 @@ package todo
 import (
 	"google.golang.org/grpc"
 
-	todo_v1 "github.com/phamquanandpad/training-project/grpc/go/todo/todo/v1"
-
 	grpcutil "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/utils/grpc"
+	todo_v1 "github.com/phamquanandpad/training-project/grpc/go/todo/todo/v1"
 
 	"github.com/phamquanandpad/training-project/go/services/todo-bff/internal/config"
 )

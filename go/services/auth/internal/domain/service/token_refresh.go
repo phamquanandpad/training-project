@@ -62,7 +62,7 @@ func (s tokenRefresh) RefreshToken(
 		)
 	}
 
-	access_token, access_token_expire_second, err := s.jwtGenerateGateway.GenerateAccessToken(userID)
+	access_token, access_token_expire_duration, err := s.jwtGenerateGateway.GenerateAccessToken(userID)
 	if err != nil {
 		return nil, app_errors.NewInternalError(
 			"tokenRefresh.Refresh",
@@ -71,7 +71,7 @@ func (s tokenRefresh) RefreshToken(
 	}
 
 	return &output.TokenRefresh{
-		AccessToken:              access_token,
-		AccessTokenExpiresSecond: access_token_expire_second,
+		AccessToken:               access_token,
+		AccessTokenExpireDuration: access_token_expire_duration,
 	}, nil
 }

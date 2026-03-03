@@ -30,7 +30,6 @@ type CreateTodoArgs struct {
 }
 
 type CreateTodoTestcase struct {
-	name     string
 	prepare  func(f *PrepareCreateTodoFields)
 	args     CreateTodoArgs
 	expected *output.TodoCreator
@@ -47,7 +46,6 @@ func Test_todoCreator_Create(t *testing.T) {
 
 	testTables := map[string]CreateTodoTestcase{
 		"Create Todo successfully": {
-			name: "Create Todo successfully",
 			prepare: func(f *PrepareCreateTodoFields) {
 				f.ctx = todo.WithUser(f.ctx, existedUser)
 				f.mockBinder.
@@ -89,7 +87,6 @@ func Test_todoCreator_Create(t *testing.T) {
 			wantErr: false,
 		},
 		"Create Todo without description": {
-			name: "Create Todo without description",
 			prepare: func(f *PrepareCreateTodoFields) {
 				f.ctx = todo.WithUser(f.ctx, existedUser)
 				f.mockBinder.
@@ -130,7 +127,6 @@ func Test_todoCreator_Create(t *testing.T) {
 			wantErr: false,
 		},
 		"Internal error when creating todo": {
-			name: "Internal error when creating todo",
 			prepare: func(f *PrepareCreateTodoFields) {
 				f.ctx = todo.WithUser(f.ctx, existedUser)
 				f.mockBinder.
@@ -157,8 +153,8 @@ func Test_todoCreator_Create(t *testing.T) {
 		},
 	}
 
-	for _, tt := range testTables {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range testTables {
+		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			t.Cleanup(ctrl.Finish)
 

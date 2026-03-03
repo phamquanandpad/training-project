@@ -22,7 +22,7 @@ func NewTodoWriter(client todo_v1.TodoServiceClient) gateway.TodoCommandsGateway
 	}
 }
 
-func (w *todoWriter) CreateTodo(
+func (w *todoWriter) Create(
 	ctx context.Context,
 	userAttributes todo.UserAttributes,
 	newTodo todo.NewTodo,
@@ -44,7 +44,7 @@ func (w *todoWriter) CreateTodo(
 	return grpcTodoToModel(res.Todo), nil
 }
 
-func (w *todoWriter) UpdateTodo(
+func (w *todoWriter) Update(
 	ctx context.Context,
 	userAttributes todo.UserAttributes,
 	todoID todo.TodoID,
@@ -68,7 +68,7 @@ func (w *todoWriter) UpdateTodo(
 	return grpcTodoToModel(res.Todo), nil
 }
 
-func (w *todoWriter) DeleteTodo(
+func (w *todoWriter) Delete(
 	ctx context.Context,
 	userAttributes todo.UserAttributes,
 	todoID todo.TodoID,

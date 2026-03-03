@@ -25,14 +25,3 @@ func (h *todoService) PostUser(
 
 	return &todo_v1.PostUserResponse{}, nil
 }
-
-// func toPostUserInput(in *todo_v1.PostUserRequest) *input.UserCreator {
-// 	userInput := in.GetUser()
-// 	return &input.UserCreator{
-// 		ID:        todo.UserID(userInput.GetId()),
-// 		Username:  userInput.GetUsername(),
-// 		Email:     cast.Ptr(userInput.GetEmail()),
-// 		CreatedAt: userInput.GetCreatedAt().AsTime(),
-// 		UpdatedAt: userInput.GetUpdatedAt().AsTime(),
-// 	}
-// }

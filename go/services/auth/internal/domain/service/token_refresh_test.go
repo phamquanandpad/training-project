@@ -32,7 +32,6 @@ type TokenRefreshArgs struct {
 }
 
 type TokenRefreshTestcase struct {
-	name     string
 	prepare  func(f *PrepareTokenRefreshFields)
 	args     TokenRefreshArgs
 	expected *output.TokenRefresh
@@ -43,6 +42,7 @@ func Test_tokenRefresh_RefreshToken(t *testing.T) {
 	t.Parallel()
 
 	now := time.Now()
+	accessTokenExpireDuration := int64(1 * time.Hour.Seconds())
 
 	existingUser := &auth_models.User{
 		ID:        auth_models.UserID(1),
@@ -54,7 +54,6 @@ func Test_tokenRefresh_RefreshToken(t *testing.T) {
 
 	testTables := map[string]TokenRefreshTestcase{
 		"Refresh token successfully": {
-			name: "Refresh token successfully",
 			prepare: func(f *PrepareTokenRefreshFields) {
 				f.mockBinder.
 					EXPECT().
@@ -77,7 +76,7 @@ func Test_tokenRefresh_RefreshToken(t *testing.T) {
 				f.mockJwtGenerateGateway.
 					EXPECT().
 					GenerateAccessToken(auth_models.UserID(1)).
-					Return("new_access_token", int64(900), nil).
+					Return("new_access_token", accessTokenExpireDuration, nil).
 					Times(1)
 			},
 			args: TokenRefreshArgs{
@@ -87,13 +86,12 @@ func Test_tokenRefresh_RefreshToken(t *testing.T) {
 				},
 			},
 			expected: &output.TokenRefresh{
-				AccessToken:              "new_access_token",
-				AccessTokenExpiresSecond: 900,
+				AccessToken:               "new_access_token",
+				AccessTokenExpireDuration: accessTokenExpireDuration,
 			},
 			wantErr: false,
 		},
 		"Invalid refresh token": {
-			name: "Invalid refresh token",
 			prepare: func(f *PrepareTokenRefreshFields) {
 				f.mockBinder.
 					EXPECT().
@@ -117,7 +115,6 @@ func Test_tokenRefresh_RefreshToken(t *testing.T) {
 			wantErr:  true,
 		},
 		"User not found after token verification": {
-			name: "User not found after token verification",
 			prepare: func(f *PrepareTokenRefreshFields) {
 				f.mockBinder.
 					EXPECT().
@@ -147,7 +144,6 @@ func Test_tokenRefresh_RefreshToken(t *testing.T) {
 			wantErr:  true,
 		},
 		"Internal error on GetUserByID": {
-			name: "Internal error on GetUserByID",
 			prepare: func(f *PrepareTokenRefreshFields) {
 				f.mockBinder.
 					EXPECT().
@@ -177,7 +173,6 @@ func Test_tokenRefresh_RefreshToken(t *testing.T) {
 			wantErr:  true,
 		},
 		"Internal error on GenerateAccessToken": {
-			name: "Internal error on GenerateAccessToken",
 			prepare: func(f *PrepareTokenRefreshFields) {
 				f.mockBinder.
 					EXPECT().
@@ -214,8 +209,8 @@ func Test_tokenRefresh_RefreshToken(t *testing.T) {
 		},
 	}
 
-	for _, tt := range testTables {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range testTables {
+		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			t.Cleanup(ctrl.Finish)
 

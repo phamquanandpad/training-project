@@ -5,18 +5,18 @@ import (
 )
 
 type UserLogin struct {
-	UserID                    auth_models.UserID
-	AccessToken               string
-	RefreshToken              string
-	AccessTokenExpiresSecond  int64
-	RefreshTokenExpiresSecond int64
+	UserID                     auth_models.UserID
+	AccessToken                string
+	RefreshToken               string
+	AccessTokenExpireDuration  int64
+	RefreshTokenExpireDuration int64
 }
 
 type UserRegister struct{}
 
 type TokenRefresh struct {
-	AccessToken              string
-	AccessTokenExpiresSecond int64
+	AccessToken               string
+	AccessTokenExpireDuration int64
 }
 
 type TokenVerify struct {

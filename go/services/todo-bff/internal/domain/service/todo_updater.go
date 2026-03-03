@@ -29,7 +29,7 @@ func (s todoUpdater) UpdateTodo(
 	ctx context.Context,
 	in *input.TodoUpdater,
 ) (*output.TodoUpdater, error) {
-	updatedTodo, err := s.todoCommandsGateway.UpdateTodo(
+	updatedTodo, err := s.todoCommandsGateway.Update(
 		ctx,
 		todo.UserAttributes{
 			UserID: in.UserID,

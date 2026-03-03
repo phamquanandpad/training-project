@@ -29,9 +29,9 @@ func (h *authService) Login(
 
 func toLoginResponse(out *output.UserLogin) *auth_v1.LoginResponse {
 	return &auth_v1.LoginResponse{
-		AccessToken:               out.AccessToken,
-		AccessTokenExpiresSecond:  int64(out.AccessTokenExpiresSecond),
-		RefreshToken:              out.RefreshToken,
-		RefreshTokenExpiresSecond: out.RefreshTokenExpiresSecond,
+		AccessToken:                out.AccessToken,
+		AccessTokenExpireDuration:  out.AccessTokenExpireDuration,
+		RefreshToken:               out.RefreshToken,
+		RefreshTokenExpireDuration: out.RefreshTokenExpireDuration,
 	}
 }

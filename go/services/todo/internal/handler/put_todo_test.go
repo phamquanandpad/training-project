@@ -2,6 +2,7 @@ package handler_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/go-playground/validator/v10"
@@ -83,6 +84,48 @@ func Test_PutTodo(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		"Missing todo_id returns validation error": {
+			prepare: func(f *fields) {
+				f.mockTodoUpdater.EXPECT().Update(gomock.Any(), gomock.Any()).Times(0)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &todo_v1.PutTodoRequest{
+					UserAttributes: &todo_v1.UserAttributes{
+						UserId: 1,
+					},
+					TodoId:      0,
+					Task:        "updated task",
+					Description: "updated description",
+					Status:      todo_common_v1.TodoStatus_TODO_STATUS_INPROCESS,
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Usecase returns error": {
+			prepare: func(f *fields) {
+				f.mockTodoUpdater.
+					EXPECT().
+					Update(gomock.Any(), gomock.Any()).
+					Return(nil, errors.New("todo not found")).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &todo_v1.PutTodoRequest{
+					UserAttributes: &todo_v1.UserAttributes{
+						UserId: 1,
+					},
+					TodoId:      1,
+					Task:        "updated task",
+					Description: "updated description",
+					Status:      todo_common_v1.TodoStatus_TODO_STATUS_INPROCESS,
+				},
+			},
+			expected: nil,
+			wantErr:  true,
 		},
 	}
 

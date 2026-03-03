@@ -9,11 +9,11 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/golang-migrate/migrate/v4"
-
 	_ "github.com/go-sql-driver/mysql"
-	mysqlDriver "github.com/golang-migrate/migrate/v4/database/mysql"
+	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+
+	mysqlDriver "github.com/golang-migrate/migrate/v4/database/mysql"
 
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/config"
 )

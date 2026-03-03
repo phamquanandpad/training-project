@@ -63,7 +63,7 @@ func (s userLogin) Login(
 		)
 	}
 
-	access_token, access_token_expire_second, err := s.jwtGenerateGateway.GenerateAccessToken(user.ID)
+	access_token, access_token_expire_duration, err := s.jwtGenerateGateway.GenerateAccessToken(user.ID)
 	if err != nil {
 		return nil, app_errors.NewInternalError(
 			"userLogin.Login",
@@ -71,7 +71,7 @@ func (s userLogin) Login(
 		)
 	}
 
-	refresh_token, refresh_token_expire_second, err := s.jwtGenerateGateway.GenerateRefreshToken(user.ID)
+	refresh_token, refresh_token_expire_duration, err := s.jwtGenerateGateway.GenerateRefreshToken(user.ID)
 	if err != nil {
 		return nil, app_errors.NewInternalError(
 			"userLogin.Login",
@@ -80,10 +80,10 @@ func (s userLogin) Login(
 	}
 
 	return &output.UserLogin{
-		UserID:                    user.ID,
-		AccessToken:               access_token,
-		AccessTokenExpiresSecond:  access_token_expire_second,
-		RefreshToken:              refresh_token,
-		RefreshTokenExpiresSecond: refresh_token_expire_second,
+		UserID:                     user.ID,
+		AccessToken:                access_token,
+		AccessTokenExpireDuration:  access_token_expire_duration,
+		RefreshToken:               refresh_token,
+		RefreshTokenExpireDuration: refresh_token_expire_duration,
 	}, nil
 }

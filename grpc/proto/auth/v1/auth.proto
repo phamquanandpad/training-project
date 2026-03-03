@@ -18,8 +18,8 @@ message LoginRequest {
 message LoginResponse {
   string access_token = 1;
   string refresh_token = 2;
-  int64  access_token_expires_second = 3;
-  int64 refresh_token_expires_second = 4;
+  int64 access_token_expire_duration = 3;
+  int64 refresh_token_expire_duration = 4;
   string username = 5;
   int64 user_id = 6;
 }
@@ -38,7 +38,7 @@ message RefreshTokenRequest {
 
 message RefreshTokenResponse {
   string access_token = 1;
-  int64  access_token_expires_second = 2;
+  int64  access_token_expire_duration = 2;
 }
 
 message VerifyTokenRequest {

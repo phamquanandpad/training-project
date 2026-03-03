@@ -10,7 +10,6 @@ import (
 	"go.uber.org/mock/gomock"
 
 	mock_gateway "github.com/phamquanandpad/training-project/go/services/auth/internal/domain/gateway/mock"
-
 	auth_models "github.com/phamquanandpad/training-project/go/services/auth/internal/domain/model/auth"
 
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/domain/service"
@@ -31,7 +30,6 @@ type TokenVerifyArgs struct {
 }
 
 type TokenVerifyTestcase struct {
-	name     string
 	prepare  func(f *PrepareTokenVerifyFields)
 	args     TokenVerifyArgs
 	expected *output.TokenVerify
@@ -53,7 +51,6 @@ func Test_tokenVerify_VerifyToken(t *testing.T) {
 
 	testTables := map[string]TokenVerifyTestcase{
 		"Verify token successfully": {
-			name: "Verify token successfully",
 			prepare: func(f *PrepareTokenVerifyFields) {
 				f.mockBinder.
 					EXPECT().
@@ -167,8 +164,8 @@ func Test_tokenVerify_VerifyToken(t *testing.T) {
 		},
 	}
 
-	for _, tt := range testTables {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range testTables {
+		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			t.Cleanup(ctrl.Finish)
 

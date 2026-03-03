@@ -3,17 +3,17 @@ package handler_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/go-cmp/cmp"
 	"go.uber.org/mock/gomock"
 	"google.golang.org/protobuf/testing/protocmp"
 
-	auth_v1 "github.com/phamquanandpad/training-project/grpc/go/auth/v1"
-
-	mock_usecase "github.com/phamquanandpad/training-project/go/services/auth/internal/usecase/mock"
-
 	auth_models "github.com/phamquanandpad/training-project/go/services/auth/internal/domain/model/auth"
+	app_errors "github.com/phamquanandpad/training-project/go/services/auth/internal/errors"
+	mock_usecase "github.com/phamquanandpad/training-project/go/services/auth/internal/usecase/mock"
+	auth_v1 "github.com/phamquanandpad/training-project/grpc/go/auth/v1"
 
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/handler"
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/handler/requestbinder"
@@ -40,6 +40,8 @@ func Test_Login(t *testing.T) {
 
 	validate := validator.New()
 	requestBinder := requestbinder.NewRequestBinder(validate)
+	accessTokenExpireDuration := int64(1 * time.Hour.Seconds())
+	refreshTokenExpireDuration := int64(24 * time.Hour.Seconds())
 
 	testTables := map[string]testcase{
 		"Login successfully": {
@@ -51,11 +53,11 @@ func Test_Login(t *testing.T) {
 						Password: "password123",
 					}).
 					Return(&output.UserLogin{
-						UserID:                    auth_models.UserID(1),
-						AccessToken:               "access-token",
-						RefreshToken:              "refresh-token",
-						AccessTokenExpiresSecond:  3600,
-						RefreshTokenExpiresSecond: 86400,
+						UserID:                     auth_models.UserID(1),
+						AccessToken:                "access-token",
+						RefreshToken:               "refresh-token",
+						AccessTokenExpireDuration:  accessTokenExpireDuration,
+						RefreshTokenExpireDuration: refreshTokenExpireDuration,
 					}, nil).
 					Times(1)
 			},
@@ -67,12 +69,75 @@ func Test_Login(t *testing.T) {
 				},
 			},
 			expected: &auth_v1.LoginResponse{
-				AccessToken:               "access-token",
-				RefreshToken:              "refresh-token",
-				AccessTokenExpiresSecond:  3600,
-				RefreshTokenExpiresSecond: 86400,
+				AccessToken:                "access-token",
+				RefreshToken:               "refresh-token",
+				AccessTokenExpireDuration:  accessTokenExpireDuration,
+				RefreshTokenExpireDuration: refreshTokenExpireDuration,
 			},
 			wantErr: false,
+		},
+		"Missing email returns validation error": {
+			prepare: func(f *fields) {
+				f.mockUserLogin.EXPECT().Login(gomock.Any(), gomock.Any()).Times(0)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.LoginRequest{
+					Email:    "",
+					Password: "password123",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Invalid email format returns validation error": {
+			prepare: func(f *fields) {
+				f.mockUserLogin.EXPECT().Login(gomock.Any(), gomock.Any()).Times(0)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.LoginRequest{
+					Email:    "not-an-email",
+					Password: "password123",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Missing password returns validation error": {
+			prepare: func(f *fields) {
+				f.mockUserLogin.EXPECT().Login(gomock.Any(), gomock.Any()).Times(0)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.LoginRequest{
+					Email:    "test@example.com",
+					Password: "",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Usecase returns error": {
+			prepare: func(f *fields) {
+				f.mockUserLogin.
+					EXPECT().
+					Login(gomock.Any(), &input.UserLogin{
+						Email:    "test@example.com",
+						Password: "password123",
+					}).
+					Return(nil, app_errors.NewAuthNError("invalid credentials", nil, nil)).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.LoginRequest{
+					Email:    "test@example.com",
+					Password: "password123",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
 		},
 	}
 

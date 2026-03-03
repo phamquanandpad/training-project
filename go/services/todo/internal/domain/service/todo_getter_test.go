@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"context"
+	"errors"
 	"reflect"
 	"testing"
 	"time"
@@ -82,6 +83,52 @@ func Test_todoGetter_Get(t *testing.T) {
 				UpdatedAt:   updatedAt,
 			},
 			wantErr: false,
+		},
+		"Todo not found": {
+			prepare: func(f *PrepareGetTodoFields) {
+				f.ctx = todo.WithUser(f.ctx, existedUser)
+				f.mockBinder.
+					EXPECT().
+					Bind(gomock.Any()).
+					Return(f.ctx).
+					Times(1)
+
+				f.mockTodoQueriesGateway.
+					EXPECT().
+					GetTodo(f.ctx, todo.TodoID(999), todo.UserID(1)).
+					Return(nil, nil)
+			},
+			args: GetTodoArgs{
+				ctx: context.Background(),
+				in: &input.TodoGetter{
+					ID: 999,
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Internal error when getting todo": {
+			prepare: func(f *PrepareGetTodoFields) {
+				f.ctx = todo.WithUser(f.ctx, existedUser)
+				f.mockBinder.
+					EXPECT().
+					Bind(gomock.Any()).
+					Return(f.ctx).
+					Times(1)
+
+				f.mockTodoQueriesGateway.
+					EXPECT().
+					GetTodo(f.ctx, todo.TodoID(1), todo.UserID(1)).
+					Return(nil, errors.New("database error"))
+			},
+			args: GetTodoArgs{
+				ctx: context.Background(),
+				in: &input.TodoGetter{
+					ID: 1,
+				},
+			},
+			expected: nil,
+			wantErr:  true,
 		},
 	}
 

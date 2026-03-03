@@ -28,7 +28,7 @@ func (s todoLister) ListTodos(
 	ctx context.Context,
 	in *input.TodoLister,
 ) (*output.TodoLister, error) {
-	todos, total, err := s.todoQueriesGateway.ListTodos(
+	todos, total, err := s.todoQueriesGateway.List(
 		ctx,
 		todo.UserAttributes{
 			UserID: in.UserID,

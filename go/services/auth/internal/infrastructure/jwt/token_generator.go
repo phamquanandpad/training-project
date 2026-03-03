@@ -31,7 +31,7 @@ func (g *tokenGenerator) GenerateAccessToken(userID auth_models.UserID) (string,
 		RegisteredClaims: jwt.RegisteredClaims{
 			IssuedAt: jwt.NewNumericDate(now),
 			ExpiresAt: jwt.NewNumericDate(
-				now.Add(time.Second * time.Duration(g.jwt_conf.AccessTokenExpiresSecond)),
+				now.Add(time.Second * time.Duration(g.jwt_conf.AccessTokenExpireDuration)),
 			),
 		},
 	}
@@ -43,7 +43,7 @@ func (g *tokenGenerator) GenerateAccessToken(userID auth_models.UserID) (string,
 		return "", 0, err
 	}
 
-	return signedString, int64(g.jwt_conf.AccessTokenExpiresSecond), nil
+	return signedString, int64(g.jwt_conf.AccessTokenExpireDuration), nil
 }
 
 func (g *tokenGenerator) GenerateRefreshToken(userID auth_models.UserID) (string, int64, error) {
@@ -54,7 +54,7 @@ func (g *tokenGenerator) GenerateRefreshToken(userID auth_models.UserID) (string
 		RegisteredClaims: jwt.RegisteredClaims{
 			IssuedAt: jwt.NewNumericDate(now),
 			ExpiresAt: jwt.NewNumericDate(
-				now.Add(time.Second * time.Duration(g.jwt_conf.RefreshTokenExpiresSecond)),
+				now.Add(time.Second * time.Duration(g.jwt_conf.RefreshTokenExpireDuration)),
 			),
 		},
 	}
@@ -66,5 +66,5 @@ func (g *tokenGenerator) GenerateRefreshToken(userID auth_models.UserID) (string
 		return "", 0, err
 	}
 
-	return signedString, int64(g.jwt_conf.RefreshTokenExpiresSecond), nil
+	return signedString, int64(g.jwt_conf.RefreshTokenExpireDuration), nil
 }

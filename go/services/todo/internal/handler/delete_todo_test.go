@@ -2,6 +2,7 @@ package handler_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/go-playground/validator/v10"
@@ -60,6 +61,44 @@ func Test_DeleteTodo(t *testing.T) {
 			},
 			expected: &todo_v1.DeleteTodoResponse{},
 			wantErr:  false,
+		},
+		"Missing todo_id returns validation error": {
+			prepare: func(f *fields) {
+				f.mockTodoDeleter.EXPECT().SoftDelete(gomock.Any(), gomock.Any()).Times(0)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &todo_v1.DeleteTodoRequest{
+					UserAttributes: &todo_v1.UserAttributes{
+						UserId: 1,
+					},
+					TodoId: 0,
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Usecase returns error": {
+			prepare: func(f *fields) {
+				f.mockTodoDeleter.
+					EXPECT().
+					SoftDelete(gomock.Any(), &input.TodoDeleter{
+						ID: 1,
+					}).
+					Return(errors.New("todo not found")).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &todo_v1.DeleteTodoRequest{
+					UserAttributes: &todo_v1.UserAttributes{
+						UserId: 1,
+					},
+					TodoId: 1,
+				},
+			},
+			expected: nil,
+			wantErr:  true,
 		},
 	}
 

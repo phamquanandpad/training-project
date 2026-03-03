@@ -27,7 +27,7 @@ func (s todoDeleter) DeleteTodo(
 	ctx context.Context,
 	in *input.TodoDeleter,
 ) error {
-	err := s.todoCommandsGateway.DeleteTodo(
+	err := s.todoCommandsGateway.Delete(
 		ctx,
 		todo.UserAttributes{
 			UserID: in.UserID,

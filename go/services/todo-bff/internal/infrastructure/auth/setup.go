@@ -3,9 +3,8 @@ package auth
 import (
 	"google.golang.org/grpc"
 
-	auth_v1 "github.com/phamquanandpad/training-project/grpc/go/auth/v1"
-
 	grpcutil "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/utils/grpc"
+	auth_v1 "github.com/phamquanandpad/training-project/grpc/go/auth/v1"
 
 	"github.com/phamquanandpad/training-project/go/services/todo-bff/internal/config"
 )

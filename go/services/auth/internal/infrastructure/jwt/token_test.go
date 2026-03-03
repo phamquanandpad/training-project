@@ -13,10 +13,10 @@ import (
 )
 
 var testJwtConfig = &config.JwtConfig{
-	AccessTokenSecret:         "test_access_secret_key_32bytes!",
-	RefreshTokenSecret:        "test_refresh_secret_key_32bytes!",
-	AccessTokenExpiresSecond:  900,
-	RefreshTokenExpiresSecond: 86400,
+	AccessTokenSecret:          "test_access_secret_key_32bytes!",
+	RefreshTokenSecret:         "test_refresh_secret_key_32bytes!",
+	AccessTokenExpireDuration:  int64(15 * time.Minute.Seconds()),
+	RefreshTokenExpireDuration: int64(24 * time.Hour.Seconds()),
 }
 
 func Test_tokenGenerator_GenerateAccessToken(t *testing.T) {
@@ -58,8 +58,8 @@ func Test_tokenGenerator_GenerateAccessToken(t *testing.T) {
 				t.Error("GenerateAccessToken() returned empty token string")
 			}
 
-			if expiresSecond != int64(testJwtConfig.AccessTokenExpiresSecond) {
-				t.Errorf("GenerateAccessToken() expiresSecond = %d, want %d", expiresSecond, testJwtConfig.AccessTokenExpiresSecond)
+			if expiresSecond != testJwtConfig.AccessTokenExpireDuration {
+				t.Errorf("GenerateAccessToken() expiresSecond = %d, want %d", expiresSecond, testJwtConfig.AccessTokenExpireDuration)
 			}
 		})
 	}
@@ -104,8 +104,8 @@ func Test_tokenGenerator_GenerateRefreshToken(t *testing.T) {
 				t.Error("GenerateRefreshToken() returned empty token string")
 			}
 
-			if expiresSecond != int64(testJwtConfig.RefreshTokenExpiresSecond) {
-				t.Errorf("GenerateRefreshToken() expiresSecond = %d, want %d", expiresSecond, testJwtConfig.RefreshTokenExpiresSecond)
+			if expiresSecond != int64(testJwtConfig.RefreshTokenExpireDuration) {
+				t.Errorf("GenerateRefreshToken() expiresSecond = %d, want %d", expiresSecond, testJwtConfig.RefreshTokenExpireDuration)
 			}
 		})
 	}
@@ -150,8 +150,8 @@ func Test_tokenVerifier_VerifyAccessToken(t *testing.T) {
 		t.Parallel()
 
 		wrongConfig := &config.JwtConfig{
-			AccessTokenSecret:        "wrong_secret_key_that_is_different",
-			AccessTokenExpiresSecond: 900,
+			AccessTokenSecret:         "wrong_secret_key_that_is_different",
+			AccessTokenExpireDuration: int64(15 * time.Minute.Seconds()),
 		}
 		wrongGenerator := jwt.NewTokenGenerator(wrongConfig)
 
@@ -227,8 +227,8 @@ func Test_tokenVerifier_VerifyRefreshToken(t *testing.T) {
 		t.Parallel()
 
 		wrongConfig := &config.JwtConfig{
-			RefreshTokenSecret:        "wrong_secret_key_that_is_different",
-			RefreshTokenExpiresSecond: 86400,
+			RefreshTokenSecret:         "wrong_secret_key_that_is_different",
+			RefreshTokenExpireDuration: int64(24 * time.Hour.Seconds()),
 		}
 		wrongGenerator := jwt.NewTokenGenerator(wrongConfig)
 

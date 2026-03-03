@@ -2,6 +2,7 @@ package handler_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/go-playground/validator/v10"
@@ -72,6 +73,23 @@ func Test_GetUser(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		"Usecase returns error": {
+			prepare: func(f *fields) {
+				f.mockUserGetter.
+					EXPECT().
+					Get(gomock.Any(), gomock.Any()).
+					Return(nil, errors.New("user not found")).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &todo_v1.GetUserRequest{
+					UserId: 1,
+				},
+			},
+			expected: nil,
+			wantErr:  true,
 		},
 	}
 

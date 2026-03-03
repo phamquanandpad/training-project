@@ -11,8 +11,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	mock_gateway "github.com/phamquanandpad/training-project/go/services/auth/internal/domain/gateway/mock"
-
 	auth_models "github.com/phamquanandpad/training-project/go/services/auth/internal/domain/model/auth"
+	app_errors "github.com/phamquanandpad/training-project/go/services/auth/internal/errors"
 
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/domain/service"
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/usecase/input"
@@ -32,7 +32,6 @@ type LoginArgs struct {
 }
 
 type LoginTestcase struct {
-	name     string
 	prepare  func(f *PrepareLoginFields)
 	args     LoginArgs
 	expected *output.UserLogin
@@ -44,6 +43,8 @@ func Test_userLogin_Login(t *testing.T) {
 
 	now := time.Now()
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("Password123!"), bcrypt.DefaultCost)
+	accessTokenExpireDuration := int64(1 * time.Hour.Seconds())
+	refreshTokenExpireDuration := int64(24 * time.Hour.Seconds())
 
 	existingUser := &auth_models.User{
 		ID:        auth_models.UserID(1),
@@ -55,7 +56,6 @@ func Test_userLogin_Login(t *testing.T) {
 
 	testTables := map[string]LoginTestcase{
 		"Login successfully": {
-			name: "Login successfully",
 			prepare: func(f *PrepareLoginFields) {
 				f.mockBinder.
 					EXPECT().
@@ -72,13 +72,13 @@ func Test_userLogin_Login(t *testing.T) {
 				f.mockJwtGenerateGateway.
 					EXPECT().
 					GenerateAccessToken(auth_models.UserID(1)).
-					Return("access_token_value", int64(900), nil).
+					Return("access_token_value", accessTokenExpireDuration, nil).
 					Times(1)
 
 				f.mockJwtGenerateGateway.
 					EXPECT().
 					GenerateRefreshToken(auth_models.UserID(1)).
-					Return("refresh_token_value", int64(86400), nil).
+					Return("refresh_token_value", refreshTokenExpireDuration, nil).
 					Times(1)
 			},
 			args: LoginArgs{
@@ -89,16 +89,15 @@ func Test_userLogin_Login(t *testing.T) {
 				},
 			},
 			expected: &output.UserLogin{
-				UserID:                    auth_models.UserID(1),
-				AccessToken:               "access_token_value",
-				AccessTokenExpiresSecond:  900,
-				RefreshToken:              "refresh_token_value",
-				RefreshTokenExpiresSecond: 86400,
+				UserID:                     auth_models.UserID(1),
+				AccessToken:                "access_token_value",
+				AccessTokenExpireDuration:  accessTokenExpireDuration,
+				RefreshToken:               "refresh_token_value",
+				RefreshTokenExpireDuration: refreshTokenExpireDuration,
 			},
 			wantErr: false,
 		},
 		"User not found": {
-			name: "User not found",
 			prepare: func(f *PrepareLoginFields) {
 				f.mockBinder.
 					EXPECT().
@@ -123,7 +122,6 @@ func Test_userLogin_Login(t *testing.T) {
 			wantErr:  true,
 		},
 		"Wrong password": {
-			name: "Wrong password",
 			prepare: func(f *PrepareLoginFields) {
 				f.mockBinder.
 					EXPECT().
@@ -148,7 +146,6 @@ func Test_userLogin_Login(t *testing.T) {
 			wantErr:  true,
 		},
 		"Internal error on GetUserByEmail": {
-			name: "Internal error on GetUserByEmail",
 			prepare: func(f *PrepareLoginFields) {
 				f.mockBinder.
 					EXPECT().
@@ -159,7 +156,7 @@ func Test_userLogin_Login(t *testing.T) {
 				f.mockUserQueriesGateway.
 					EXPECT().
 					GetUserByEmail(f.ctx, "user1@example.com").
-					Return(nil, errors.New("database error")).
+					Return(nil, app_errors.NewInternalError("database error", errors.New("database error"))).
 					Times(1)
 			},
 			args: LoginArgs{
@@ -173,7 +170,6 @@ func Test_userLogin_Login(t *testing.T) {
 			wantErr:  true,
 		},
 		"Internal error on GenerateAccessToken": {
-			name: "Internal error on GenerateAccessToken",
 			prepare: func(f *PrepareLoginFields) {
 				f.mockBinder.
 					EXPECT().
@@ -190,7 +186,7 @@ func Test_userLogin_Login(t *testing.T) {
 				f.mockJwtGenerateGateway.
 					EXPECT().
 					GenerateAccessToken(auth_models.UserID(1)).
-					Return("", int64(0), errors.New("jwt error")).
+					Return("", int64(0), app_errors.NewInternalError("jwt error", errors.New("jwt"))).
 					Times(1)
 			},
 			args: LoginArgs{
@@ -204,7 +200,6 @@ func Test_userLogin_Login(t *testing.T) {
 			wantErr:  true,
 		},
 		"Internal error on GenerateRefreshToken": {
-			name: "Internal error on GenerateRefreshToken",
 			prepare: func(f *PrepareLoginFields) {
 				f.mockBinder.
 					EXPECT().
@@ -221,13 +216,13 @@ func Test_userLogin_Login(t *testing.T) {
 				f.mockJwtGenerateGateway.
 					EXPECT().
 					GenerateAccessToken(auth_models.UserID(1)).
-					Return("access_token_value", int64(900), nil).
+					Return("access_token_value", accessTokenExpireDuration, nil).
 					Times(1)
 
 				f.mockJwtGenerateGateway.
 					EXPECT().
 					GenerateRefreshToken(auth_models.UserID(1)).
-					Return("", int64(0), errors.New("jwt error")).
+					Return("", int64(0), app_errors.NewInternalError("jwt error", errors.New("jwt"))).
 					Times(1)
 			},
 			args: LoginArgs{
@@ -242,8 +237,8 @@ func Test_userLogin_Login(t *testing.T) {
 		},
 	}
 
-	for _, tt := range testTables {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range testTables {
+		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			t.Cleanup(ctrl.Finish)
 

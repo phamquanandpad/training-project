@@ -9,7 +9,6 @@ import (
 	"go.uber.org/mock/gomock"
 
 	mock_gateway "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/domain/gateway/mock"
-
 	auth_model "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/domain/model/auth"
 
 	"github.com/phamquanandpad/training-project/go/services/todo-bff/internal/domain/service"

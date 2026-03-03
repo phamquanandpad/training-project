@@ -29,7 +29,7 @@ func (s todoGetter) GetTodo(
 	ctx context.Context,
 	in *input.TodoGetter,
 ) (*output.TodoGetter, error) {
-	todo, err := s.todoQueriesGateway.GetTodo(
+	todo, err := s.todoQueriesGateway.Get(
 		ctx,
 		todo.UserAttributes{
 			UserID: in.UserID,

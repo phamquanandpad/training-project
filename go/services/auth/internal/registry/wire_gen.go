@@ -91,9 +91,9 @@ func newDBConfig(conf *config.Config) *config.DBConfig {
 
 func newJwtConfig(conf *config.Config) *config.JwtConfig {
 	return &config.JwtConfig{
-		AccessTokenSecret:         conf.AccessTokenSecret,
-		RefreshTokenSecret:        conf.RefreshTokenSecret,
-		AccessTokenExpiresSecond:  conf.AccessTokenExpiresSecond,
-		RefreshTokenExpiresSecond: conf.RefreshTokenExpiresSecond,
+		AccessTokenSecret:          conf.AccessTokenSecret,
+		RefreshTokenSecret:         conf.RefreshTokenSecret,
+		AccessTokenExpireDuration:  conf.AccessTokenExpireDuration,
+		RefreshTokenExpireDuration: conf.RefreshTokenExpireDuration,
 	}
 }

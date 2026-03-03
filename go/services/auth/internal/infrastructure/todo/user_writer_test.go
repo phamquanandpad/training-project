@@ -2,6 +2,7 @@ package todo_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -70,6 +71,27 @@ func Test_userWriter_CreateUser(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		"Fail when gRPC client returns error on CreateUser": {
+			prepare: func(f *fields) {
+				f.mockTodoServiceClient.
+					EXPECT().
+					PostUser(gomock.Any(), gomock.Any()).
+					Return(nil, errors.New("rpc error: user already exists")).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				newUser: todo.NewUser{
+					ID:       todo.UserID(10),
+					Username: "user10",
+					Email:    cast.Ptr("user10@example.com"),
+				},
+			},
+			expect: expected{
+				user: nil,
+			},
+			wantErr: true,
 		},
 	}
 

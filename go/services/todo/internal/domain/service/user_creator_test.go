@@ -30,7 +30,6 @@ type CreateUserArgs struct {
 }
 
 type CreateUserTestcase struct {
-	name     string
 	prepare  func(f *PrepareCreateUserFields)
 	args     CreateUserArgs
 	expected *output.UserCreator
@@ -44,7 +43,6 @@ func Test_userCreator_Create(t *testing.T) {
 
 	testTables := map[string]CreateUserTestcase{
 		"Create User successfully": {
-			name: "Create User successfully",
 			prepare: func(f *PrepareCreateUserFields) {
 				f.mockBinder.
 					EXPECT().
@@ -88,7 +86,6 @@ func Test_userCreator_Create(t *testing.T) {
 			wantErr: false,
 		},
 		"Internal error when creating user": {
-			name: "Internal error when creating user",
 			prepare: func(f *PrepareCreateUserFields) {
 				f.mockBinder.
 					EXPECT().
@@ -118,8 +115,8 @@ func Test_userCreator_Create(t *testing.T) {
 		},
 	}
 
-	for _, tt := range testTables {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range testTables {
+		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			t.Cleanup(ctrl.Finish)
 

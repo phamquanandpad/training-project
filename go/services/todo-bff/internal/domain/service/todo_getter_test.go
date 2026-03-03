@@ -10,7 +10,6 @@ import (
 	"go.uber.org/mock/gomock"
 
 	mock_gateway "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/domain/gateway/mock"
-
 	todo_model "github.com/phamquanandpad/training-project/go/services/todo-bff/internal/domain/model/todo"
 
 	"github.com/phamquanandpad/training-project/go/pkg/cast"
@@ -46,7 +45,7 @@ func Test_todoGetter_GetTodo(t *testing.T) {
 			prepare: func(f *PrepareTodoGetterFields) {
 				f.mockTodoQueriesGateway.
 					EXPECT().
-					GetTodo(f.ctx, todo_model.UserAttributes{
+					Get(f.ctx, todo_model.UserAttributes{
 						UserID: todo_model.UserID(1),
 					}, todo_model.TodoID(1)).
 					Return(&todo_model.Todo{
@@ -84,7 +83,7 @@ func Test_todoGetter_GetTodo(t *testing.T) {
 			prepare: func(f *PrepareTodoGetterFields) {
 				f.mockTodoQueriesGateway.
 					EXPECT().
-					GetTodo(f.ctx, todo_model.UserAttributes{
+					Get(f.ctx, todo_model.UserAttributes{
 						UserID: todo_model.UserID(1),
 					}, todo_model.TodoID(999)).
 					Return(nil, nil).

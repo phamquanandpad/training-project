@@ -29,7 +29,7 @@ func ExtractAuthDB(ctx context.Context) (*gorm.DB, error) {
 
 func WithCursorPagingTokenWhereScope(columnFields []CursorPagingField, token *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if token == nil || len(*token) == 0 {
+		if len(*token) == 0 {
 			return db
 		}
 

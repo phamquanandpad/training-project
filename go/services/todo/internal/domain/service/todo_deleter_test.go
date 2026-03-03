@@ -28,7 +28,6 @@ type DeleteTodoArgs struct {
 }
 
 type DeleteTodoTestcase struct {
-	name    string
 	prepare func(f *PrepareDeleteTodoFields)
 	args    DeleteTodoArgs
 	wantErr bool
@@ -73,7 +72,6 @@ func Test_todoDeleter_SoftDelete(t *testing.T) {
 			wantErr: false,
 		},
 		"Internal error from CanAccessTodo": {
-			name: "Internal error from CanAccessTodo",
 			prepare: func(f *PrepareDeleteTodoFields) {
 				f.ctx = todo.WithUser(f.ctx, existedUser)
 				f.mockBinder.
@@ -97,7 +95,6 @@ func Test_todoDeleter_SoftDelete(t *testing.T) {
 			wantErr: true,
 		},
 		"Cannot access todo (unauthorized)": {
-			name: "Cannot access todo (unauthorized)",
 			prepare: func(f *PrepareDeleteTodoFields) {
 				f.ctx = todo.WithUser(f.ctx, existedUser)
 				f.mockBinder.
@@ -121,7 +118,6 @@ func Test_todoDeleter_SoftDelete(t *testing.T) {
 			wantErr: true,
 		},
 		"Internal error when soft deleting todo": {
-			name: "Internal error when soft deleting todo",
 			prepare: func(f *PrepareDeleteTodoFields) {
 				f.ctx = todo.WithUser(f.ctx, existedUser)
 				f.mockBinder.
@@ -152,8 +148,8 @@ func Test_todoDeleter_SoftDelete(t *testing.T) {
 		},
 	}
 
-	for _, tt := range testTables {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range testTables {
+		t.Run(name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			t.Cleanup(ctrl.Finish)
 

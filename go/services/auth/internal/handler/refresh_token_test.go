@@ -3,15 +3,16 @@ package handler_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/go-cmp/cmp"
 	"go.uber.org/mock/gomock"
 	"google.golang.org/protobuf/testing/protocmp"
 
-	auth_v1 "github.com/phamquanandpad/training-project/grpc/go/auth/v1"
-
+	app_errors "github.com/phamquanandpad/training-project/go/services/auth/internal/errors"
 	mock_usecase "github.com/phamquanandpad/training-project/go/services/auth/internal/usecase/mock"
+	auth_v1 "github.com/phamquanandpad/training-project/grpc/go/auth/v1"
 
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/handler"
 	"github.com/phamquanandpad/training-project/go/services/auth/internal/handler/requestbinder"
@@ -38,6 +39,7 @@ func Test_RefreshToken(t *testing.T) {
 
 	validate := validator.New()
 	requestBinder := requestbinder.NewRequestBinder(validate)
+	accessTokenExpireDuration := int64(1 * time.Hour.Seconds())
 
 	testTables := map[string]testcase{
 		"Refresh token successfully": {
@@ -48,8 +50,8 @@ func Test_RefreshToken(t *testing.T) {
 						RefreshToken: "refresh-token",
 					}).
 					Return(&output.TokenRefresh{
-						AccessToken:              "new-access-token",
-						AccessTokenExpiresSecond: 3600,
+						AccessToken:               "new-access-token",
+						AccessTokenExpireDuration: accessTokenExpireDuration,
 					}, nil).
 					Times(1)
 			},
@@ -60,10 +62,42 @@ func Test_RefreshToken(t *testing.T) {
 				},
 			},
 			expected: &auth_v1.RefreshTokenResponse{
-				AccessToken:              "new-access-token",
-				AccessTokenExpiresSecond: 3600,
+				AccessToken:               "new-access-token",
+				AccessTokenExpireDuration: accessTokenExpireDuration,
 			},
 			wantErr: false,
+		},
+		"Missing refresh token returns validation error": {
+			prepare: func(f *fields) {
+				f.mockTokenRefresh.EXPECT().RefreshToken(gomock.Any(), gomock.Any()).Times(0)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.RefreshTokenRequest{
+					RefreshToken: "",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
+		},
+		"Usecase returns auth error": {
+			prepare: func(f *fields) {
+				f.mockTokenRefresh.
+					EXPECT().
+					RefreshToken(gomock.Any(), &input.TokenRefresh{
+						RefreshToken: "expired-token",
+					}).
+					Return(nil, app_errors.NewAuthNError("token is expired or invalid", nil, nil)).
+					Times(1)
+			},
+			args: args{
+				ctx: context.Background(),
+				req: &auth_v1.RefreshTokenRequest{
+					RefreshToken: "expired-token",
+				},
+			},
+			expected: nil,
+			wantErr:  true,
 		},
 	}
 

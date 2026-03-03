@@ -23,7 +23,7 @@ var ErrorTypes = struct {
 	AlreadyExistedError:     "ALREADY_EXISTED_ERROR",
 	AuthNError:              "AUTH_N_ERROR",
 	AuthZError:              "AUTH_Z_ERROR",
-	InternalError:           "INTERAL_ERROR",
+	InternalError:           "INTERNAL_ERROR",
 	NotFoundError:           "NOT_FOUND_ERROR",
 	ParameterError:          "PARAMETER_ERROR",
 	PreconditionFailedError: "PRECONDITIONAL_FAILED_ERROR",
