@@ -35,7 +35,7 @@ func Test_todoReader_GetTodo(t *testing.T) {
 				UserID:      todo.UserID(1),
 				Task:        "todo task 1",
 				Description: cast.Ptr("todo description 1"),
-				Status:      todo.Pending, // 0
+				Status:      todo.Pending,
 				CreatedAt:   getLocalTimeByString("2026-01-01T00:00:00Z"),
 				UpdatedAt:   getLocalTimeByString("2026-01-01T00:00:00Z"),
 			},
@@ -52,7 +52,6 @@ func Test_todoReader_GetTodo(t *testing.T) {
 	}
 
 	for name, tt := range testTables {
-		tt := tt
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
@@ -73,6 +72,8 @@ func Test_todoReader_GetTodo(t *testing.T) {
 func Test_todoReader_ListTodos(t *testing.T) {
 	type args struct {
 		userID todo.UserID
+		limit  int
+		offset int
 	}
 
 	type expected struct {
@@ -90,7 +91,7 @@ func Test_todoReader_ListTodos(t *testing.T) {
 
 	testTables := map[string]testcase{
 		"List Todos for User 1": {
-			args: args{userID: 1},
+			args: args{userID: 1, limit: 10, offset: 0},
 			expected: expected{
 				todos: []*todo.Todo{
 					{
@@ -117,7 +118,7 @@ func Test_todoReader_ListTodos(t *testing.T) {
 			wantErr: false,
 		},
 		"List Todos for User 2": {
-			args: args{userID: 2},
+			args: args{userID: 2, limit: 10, offset: 0},
 			expected: expected{
 				todos: []*todo.Todo{
 					{
@@ -137,13 +138,12 @@ func Test_todoReader_ListTodos(t *testing.T) {
 	}
 
 	for name, tt := range testTables {
-		tt := tt
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
 			todoReader := datastore.NewTodoReader()
 
-			todos, total, err := todoReader.ListTodos(ctxWithReadDB, tt.args.userID)
+			todos, total, err := todoReader.ListTodos(ctxWithReadDB, tt.args.userID, tt.args.limit, tt.args.offset)
 			if (err != nil) != tt.wantErr {
 				t.Fatalf("error = %v wantErr %v", err, tt.wantErr)
 			}

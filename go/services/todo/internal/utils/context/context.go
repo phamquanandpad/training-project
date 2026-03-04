@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/phamquanandpad/training-project/services/todo/internal/errors"
+	"github.com/phamquanandpad/training-project/go/services/todo/internal/errors"
 )
 
 // ValueOnly returns a context that keeps only the parent's values.

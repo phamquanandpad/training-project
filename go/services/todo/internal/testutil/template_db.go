@@ -146,6 +146,7 @@ func (db *TemplateDB) loadFixtures() error {
 		testfixtures.Database(db.db),
 		testfixtures.Dialect("mysql"),
 		testfixtures.Directory(db.cfg.FixturesDir),
+		testfixtures.DangerousSkipTestDatabaseCheck(),
 	)
 	if err != nil {
 		return fmt.Errorf("create fixtures loader: %w", err)

@@ -74,15 +74,15 @@ func (x *LoginRequest) GetPassword() string {
 }
 
 type LoginResponse struct {
-	state                     protoimpl.MessageState `protogen:"open.v1"`
-	AccessToken               string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	RefreshToken              string                 `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
-	AccessTokenExpiresSecond  int64                  `protobuf:"varint,3,opt,name=access_token_expires_second,json=accessTokenExpiresSecond,proto3" json:"access_token_expires_second,omitempty"`
-	RefreshTokenExpiresSecond int64                  `protobuf:"varint,4,opt,name=refresh_token_expires_second,json=refreshTokenExpiresSecond,proto3" json:"refresh_token_expires_second,omitempty"`
-	Username                  string                 `protobuf:"bytes,5,opt,name=username,proto3" json:"username,omitempty"`
-	UserId                    int64                  `protobuf:"varint,6,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	unknownFields             protoimpl.UnknownFields
-	sizeCache                 protoimpl.SizeCache
+	state                      protoimpl.MessageState `protogen:"open.v1"`
+	AccessToken                string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	RefreshToken               string                 `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+	AccessTokenExpireDuration  int64                  `protobuf:"varint,3,opt,name=access_token_expire_duration,json=accessTokenExpireDuration,proto3" json:"access_token_expire_duration,omitempty"`
+	RefreshTokenExpireDuration int64                  `protobuf:"varint,4,opt,name=refresh_token_expire_duration,json=refreshTokenExpireDuration,proto3" json:"refresh_token_expire_duration,omitempty"`
+	Username                   string                 `protobuf:"bytes,5,opt,name=username,proto3" json:"username,omitempty"`
+	UserId                     int64                  `protobuf:"varint,6,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
 func (x *LoginResponse) Reset() {
@@ -129,16 +129,16 @@ func (x *LoginResponse) GetRefreshToken() string {
 	return ""
 }
 
-func (x *LoginResponse) GetAccessTokenExpiresSecond() int64 {
+func (x *LoginResponse) GetAccessTokenExpireDuration() int64 {
 	if x != nil {
-		return x.AccessTokenExpiresSecond
+		return x.AccessTokenExpireDuration
 	}
 	return 0
 }
 
-func (x *LoginResponse) GetRefreshTokenExpiresSecond() int64 {
+func (x *LoginResponse) GetRefreshTokenExpireDuration() int64 {
 	if x != nil {
-		return x.RefreshTokenExpiresSecond
+		return x.RefreshTokenExpireDuration
 	}
 	return 0
 }
@@ -298,11 +298,11 @@ func (x *RefreshTokenRequest) GetRefreshToken() string {
 }
 
 type RefreshTokenResponse struct {
-	state                    protoimpl.MessageState `protogen:"open.v1"`
-	AccessToken              string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	AccessTokenExpiresSecond int64                  `protobuf:"varint,2,opt,name=access_token_expires_second,json=accessTokenExpiresSecond,proto3" json:"access_token_expires_second,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state                     protoimpl.MessageState `protogen:"open.v1"`
+	AccessToken               string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	AccessTokenExpireDuration int64                  `protobuf:"varint,2,opt,name=access_token_expire_duration,json=accessTokenExpireDuration,proto3" json:"access_token_expire_duration,omitempty"`
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *RefreshTokenResponse) Reset() {
@@ -342,9 +342,9 @@ func (x *RefreshTokenResponse) GetAccessToken() string {
 	return ""
 }
 
-func (x *RefreshTokenResponse) GetAccessTokenExpiresSecond() int64 {
+func (x *RefreshTokenResponse) GetAccessTokenExpireDuration() int64 {
 	if x != nil {
-		return x.AccessTokenExpiresSecond
+		return x.AccessTokenExpireDuration
 	}
 	return 0
 }
@@ -444,12 +444,12 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\x12auth/v1/auth.proto\x12\aauth.v1\"@\n" +
 	"\fLoginRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"\x8c\x02\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"\x90\x02\n" +
 	"\rLoginResponse\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\x12=\n" +
-	"\x1baccess_token_expires_second\x18\x03 \x01(\x03R\x18accessTokenExpiresSecond\x12?\n" +
-	"\x1crefresh_token_expires_second\x18\x04 \x01(\x03R\x19refreshTokenExpiresSecond\x12\x1a\n" +
+	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\x12?\n" +
+	"\x1caccess_token_expire_duration\x18\x03 \x01(\x03R\x19accessTokenExpireDuration\x12A\n" +
+	"\x1drefresh_token_expire_duration\x18\x04 \x01(\x03R\x1arefreshTokenExpireDuration\x12\x1a\n" +
 	"\busername\x18\x05 \x01(\tR\busername\x12\x17\n" +
 	"\auser_id\x18\x06 \x01(\x03R\x06userId\"_\n" +
 	"\x0fRegisterRequest\x12\x14\n" +
@@ -458,10 +458,10 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\busername\x18\x03 \x01(\tR\busername\"\x12\n" +
 	"\x10RegisterResponse\":\n" +
 	"\x13RefreshTokenRequest\x12#\n" +
-	"\rrefresh_token\x18\x01 \x01(\tR\frefreshToken\"x\n" +
+	"\rrefresh_token\x18\x01 \x01(\tR\frefreshToken\"z\n" +
 	"\x14RefreshTokenResponse\x12!\n" +
-	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12=\n" +
-	"\x1baccess_token_expires_second\x18\x02 \x01(\x03R\x18accessTokenExpiresSecond\"7\n" +
+	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12?\n" +
+	"\x1caccess_token_expire_duration\x18\x02 \x01(\x03R\x19accessTokenExpireDuration\"7\n" +
 	"\x12VerifyTokenRequest\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\".\n" +
 	"\x13VerifyTokenResponse\x12\x17\n" +

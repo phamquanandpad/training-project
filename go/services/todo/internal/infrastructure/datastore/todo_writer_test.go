@@ -152,7 +152,6 @@ func Test_todoWriter_UpdateTodo(t *testing.T) {
 	}
 
 	for name, tt := range testTables {
-		tt := tt
 		t.Run(name, func(t *testing.T) {
 			tx := gormDB.Begin()
 
@@ -221,7 +220,6 @@ func Test_todoWriter_SoftDeleteTodo(t *testing.T) {
 	}
 
 	for name, tt := range testTables {
-		tt := tt
 		t.Run(name, func(t *testing.T) {
 			tx := gormDB.Begin()
 
