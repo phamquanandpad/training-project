@@ -1,0 +1,45 @@
+services:
+  database:
+    image: mysql:8.4
+    container_name: todo_database
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: "Asia/Tokyo"
+    networks:
+      - todo_network
+    ports:
+      - "33062:3306"
+    volumes:
+      - ./database/docker/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./database/docker/sqls:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-udocker", "-pdocker"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  dbmigrate:
+    image: golang:1.25-alpine
+    container_name: todo_dbmigration
+    depends_on:
+      database:
+        condition: service_healthy
+    working_dir: /workspace/go
+    command: ["sh", "-c", "go run ./services/todo/cmd/migrate up"]
+    environment:
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASS: password
+      DB_NAME: todo
+    networks:
+      - todo_network
+    volumes:
+      - ../..:/workspace/go
+      - ./database/migrations:/workspace/go/database/migrations
+    restart: "no"
+
+networks:
+  todo_network:
