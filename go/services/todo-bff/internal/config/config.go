@@ -15,6 +15,7 @@ const (
 )
 
 type Config struct {
+	AuthAddr     string       `required:"true" split_words:"true"`
 	TodoAddr     string       `required:"true" split_words:"true"`
 	AllowOrigins AllowOrigins `split_words:"true"`
 	// Environment
@@ -23,6 +24,11 @@ type Config struct {
 	Port string `split_words:"true"`
 	// CORS headers to allow
 	AllowHeaders []string `ignored:"true"`
+	// Redis
+	RedisHost     string `split_words:"true"`
+	RedisPort     string `split_words:"true"`
+	RedisPassword string `split_words:"true"`
+	RedisDB       int    `split_words:"true"`
 }
 
 type AllowOrigins []string

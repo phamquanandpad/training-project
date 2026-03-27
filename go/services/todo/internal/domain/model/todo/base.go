@@ -37,16 +37,6 @@ func (st *SortingType) String() string {
 	return string(*st)
 }
 
-var ModelTypes = struct {
-	Report      int
-	Message     int
-	ReportReply int
-}{
-	Message:     1,
-	Report:      2,
-	ReportReply: 3,
-}
-
 type CursorPagingParam struct {
 	Token        *string      `json:"token"`
 	Size         int          `json:"size" validate:"gt=0"`

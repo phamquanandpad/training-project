@@ -9,13 +9,13 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/phamquanandpad/training-project/services/todo/internal/config"
-
 	"github.com/golang-migrate/migrate/v4"
+
+	_ "github.com/go-sql-driver/mysql"
 	mysqlDriver "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/phamquanandpad/training-project/go/services/todo/internal/config"
 )
 
 func buildDSN(c config.DBConfig) string {

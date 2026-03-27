@@ -33,6 +33,7 @@ func (r *todoReader) GetTodo(
 		Where("user_id = ?", userID).
 		First(&todo).
 		Error
+
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -46,6 +47,7 @@ func (r *todoReader) GetTodo(
 func (r *todoReader) ListTodos(
 	ctx context.Context,
 	userID todo.UserID,
+	limit, offset int,
 ) ([]*todo.Todo, int, error) {
 	tx, er := ExtractTodoDB(ctx)
 	if er != nil {
@@ -57,6 +59,8 @@ func (r *todoReader) ListTodos(
 	err := db.
 		Where("deleted_at IS NULL").Where("user_id = ?", userID).
 		Order("created_at DESC").
+		Offset(offset).
+		Limit(limit).
 		Find(&todos).
 		Error
 	if err != nil {

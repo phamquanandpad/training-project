@@ -12,7 +12,7 @@ type Binder interface {
 
 type TodoQueriesGateway interface {
 	GetTodo(ctx context.Context, todoID todo.TodoID, userID todo.UserID) (*todo.Todo, error)
-	ListTodos(ctx context.Context, userID todo.UserID) ([]*todo.Todo, int, error)
+	ListTodos(ctx context.Context, userID todo.UserID, limit, offset int) ([]*todo.Todo, int, error)
 }
 
 type TodoCommandsGateway interface {
@@ -22,7 +22,7 @@ type TodoCommandsGateway interface {
 }
 
 type UserQueriesGateway interface {
-	GetUser(ctx context.Context, userID int64) (*todo.User, error)
+	GetUser(ctx context.Context, userID todo.UserID) (*todo.User, error)
 }
 
 type UserCommandsGateway interface {

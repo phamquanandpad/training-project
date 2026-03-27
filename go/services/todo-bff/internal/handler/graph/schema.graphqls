@@ -1,0 +1,75 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Todo {
+  id: ID!
+  task: String!
+  description: String
+  status: TodoStatus!
+  createdAt: Time
+  updatedAt: Time
+}
+
+enum TodoStatus {
+  PENDING
+  IN_PROCESS
+  DONE
+}
+
+scalar Time
+
+input LoginRequest {
+  email: String!
+  password: String!
+}
+
+input RegisterRequest {
+  username: String!
+  email: String!
+  password: String!
+}
+
+input ListTodosRequest {
+  limit: Int!
+  offset: Int!
+}
+
+type ListTodosResponse {
+  todos: [Todo!]
+  total: Int!
+}
+
+input PostTodoRequest {
+  task: String!
+  description: String
+  status: TodoStatus!
+}
+
+input GetTodoRequest {
+  id: ID!
+}
+
+input PutTodoRequest {
+  id: ID!
+  task: String
+  description: String
+  status: TodoStatus
+}
+
+input DeleteTodoRequest {
+  id: ID!
+}
+
+type Query {
+  getTodo(in: GetTodoRequest!): Todo!
+  listTodos(in: ListTodosRequest!): ListTodosResponse!
+}
+
+type Mutation {
+  createTodo(in: PostTodoRequest!): Todo!
+  updateTodo(in: PutTodoRequest!): Todo!
+  deleteTodo(in: DeleteTodoRequest!): Boolean!
+  login(in: LoginRequest!): Boolean!
+  register(in: RegisterRequest!): Boolean!
+}
